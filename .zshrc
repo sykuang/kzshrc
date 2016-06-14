@@ -1,25 +1,24 @@
+# ========================================================
+# Initialization zplug
+# ========================================================
+if [[ ! -d $HOME/.zplug ]]; then
+    curl -sL get.zplug.sh | zsh
+fi
 source ~/.zplug/init.zsh
-
-# Make sure to use double quotes
-zplug "zsh-users/zsh-history-substring-search"
 
 # Use the package as a command
 # And accept glob patterns (e.g., brace, wildcard, ...)
 zplug "Jxck/dotfiles", as:command, use:"bin/{histuniq,color}"
+zplug "kenkuang1213/dotfiles", as:command, use:"bin/genCtags"
 
 # Can manage everything e.g., other person's zshrc
 zplug "tcnksm/docker-alias", use:zshrc
 
 # Disable updates using the "frozen:" tag
 zplug "k4rthik/git-cal", as:command, frozen:1
-
-# Grab binaries from GitHub Releases
-# and rename with the "rename-to:" tag
-zplug "junegunn/fzf-bin", \
-    from:gh-r, \
-    as:command, \
-    rename-to:fzf, \
-    use:"*darwin*amd64*"
+zplug "junegunn/fzf-bin", as:command, from:gh-r, rename-to:fzf
+zplug "junegunn/fzf", as:command, use:bin/fzf-tmux
+zplug "junegunn/fzf", use:"shell/*.zsh"
 
 # Supports oh-my-zsh plugins and the like
 zplug "plugins/git",   from:oh-my-zsh, if:"(( $+commands[git] ))",  nice:10
@@ -28,14 +27,15 @@ zplug "themes/avit", from:oh-my-zsh
 zplug "lib/clipboard", from:oh-my-zsh, if:"[[ $OSTYPE == *darwin* ]]"
 zplug "plugins/zsh_reload", from:oh-my-zsh
 zplug "plugins/colorize", from:oh-my-zsh
-zplug "zsh-users/zsh-completions"
+zplug "plugins/pip", from:oh-my-zsh
+zplug "zsh-users/zsh-completions", if:"(( $+commands[pip] ))"
 zplug "zsh-users/zsh-autosuggestions", nice:1
 zplug "felixr/docker-zsh-completion"
 zplug "zsh-users/zsh-history-substring-search"
-zplug "zsh-users/zsh-syntax-highlighting", nice:19
-
-
-
+zplug "zsh-users/zsh-syntax-highlighting", nice:10
+zplug "Tarrasch/zsh-autoenv"
+zplug "zplug/zplug"
+zplug "chrissicool/zsh-256color"
 
 #####################################################################
 # completions
@@ -94,7 +94,7 @@ zstyle ':completion:*:processes' command "ps -u $USER -o pid,stat,%cpu,%mem,cput
 
 
 # Run a command after a plugin is installed/updated
-zplug "tj/n", hook-build:"make install"
+zplug "tj/n", as:command, use:'bin/n', hook-build:"make install"
 
 # Supports checking out a specific branch/tag/commit
 zplug "b4b4r07/enhancd", at:v1
@@ -109,13 +109,6 @@ zplug "b4b4r07/79ee61f7c140c63d2786", \
     as:command, \
     use:get_last_pane_path.sh
 
-# Support bitbucket
-zplug "b4b4r07/hello_bitbucket", \
-    from:bitbucket, \
-    as:command, \
-    hook-build:"chmod 755 *.sh", \
-    use:"*.sh"
-
 # Install plugins if there are plugins that have not been installed
 if ! zplug check --verbose; then
     printf "Install? [y/N]: "
@@ -124,5 +117,74 @@ if ! zplug check --verbose; then
     fi
 fi
 
+# ========================================================
+# Set ZSH opt
+# ========================================================
+setopt autopushd
+# ZSH history
+setopt append_history
+setopt hist_expire_dups_first
+setopt hist_fcntl_lock
+setopt hist_ignore_all_dups
+setopt hist_lex_words
+setopt hist_reduce_blanks
+setopt hist_save_no_dups
+setopt share_history
+
+export CLICOLOR=1
+export BLOCK_SIZE=human-readable # https://www.gnu.org/software/coreutils/manual/html_node/Block-size.html
+export HISTSIZE=11000
+export SAVEHIST=10000
+export HISTFILE=~/.zsh_history
+
+unset COMPLETION_WAITING_DOTS # https://github.com/tarruda/zsh-autosuggestions#known-issues
+#export COMPLETION_WAITING_DOTS=true
+export DISABLE_AUTO_TITLE=true
+export DISABLE_CORRECTION=true
+#export DISABLE_UNTRACKED_FILES_DIRTY=true # Improves repo status check time.
+export DISABLE_UPDATE_PROMPT=true
+export EDITOR='vim'
+if [[ `command -v ag` ]]; then
+    export FZF_DEFAULT_COMMAND='ag -g ""'
+    export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+fi
+export FZF_DEFAULT_OPTS='--multi'
+export NOTIFY_COMMAND_COMPLETE_TIMEOUT=300
+export NVIM_TUI_ENABLE_CURSOR_SHAPE=1 # https://github.com/neovim/neovim/pull/2007#issuecomment-74863439
+export UPDATE_ZSH_DAYS=1
+### fzf ###
+export FZF_COMPLETION_TRIGGER='**'
+
+### AUTOSUGGESTIONS ###
+if zplug check zsh-users/zsh-autosuggestions; then
+    ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(history-substring-search-up history-substring-search-down) # Add history-substring-search-* widgets to list of widgets that clear the autosuggestion
+    ZSH_AUTOSUGGEST_CLEAR_WIDGETS=("${(@)ZSH_AUTOSUGGEST_CLEAR_WIDGETS:#(up|down)-line-or-history}") # Remove *-line-or-history widgets from list of widgets that clear the autosuggestion to avoid conflict with history-substring-search-* widgets
+fi
+
+### KEY BINDINGS ###
+KEYTIMEOUT=1 # Prevents key timeout lag.
+bindkey -v
+
+# Bind UP and DOWN arrow keys for subsstring search.
+if zplug check zsh-users/zsh-history-substring-search; then
+    zmodload zsh/terminfo
+    bindkey "$terminfo[kcuu1]" history-substring-search-up
+    bindkey "$terminfo[kcud1]" history-substring-search-down
+fi
+
+# ZSH Hightlight
+ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern cursor) 
+
 # Then, source plugins and add commands to $PATH
 zplug load --verbose
+
+# ========================================================
+# Customize environment variables
+# ========================================================
+# alias
+alias jj=jobs
+
+# Env Variable
+if [[ -d $HOME/.zshenv ]];then
+    source $HONE/.zshenv
+fi
