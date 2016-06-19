@@ -1,34 +1,31 @@
 # ========================================================
 # Initialization zplug
 # ========================================================
+# Install zplug if you have not intalled yet.
 if [[ ! -d $HOME/.zplug ]]; then
     curl -sL get.zplug.sh | zsh
 fi
+
 source ~/.zplug/init.zsh
 
-# Use the package as a command
-# And accept glob patterns (e.g., brace, wildcard, ...)
+# Install commands
 zplug "Jxck/dotfiles", as:command, use:"bin/{histuniq,color}"
 zplug "kenkuang1213/dotfiles", as:command, use:"bin/genCtags"
-
-# Can manage everything e.g., other person's zshrc
-zplug "tcnksm/docker-alias", use:zshrc
-
-# Disable updates using the "frozen:" tag
 zplug "k4rthik/git-cal", as:command, frozen:1
 zplug "junegunn/fzf-bin", as:command, from:gh-r, rename-to:fzf
 zplug "junegunn/fzf", as:command, use:bin/fzf-tmux
 zplug "junegunn/fzf", use:"shell/*.zsh"
 
-# Supports oh-my-zsh plugins and the like
+# oh-my-zsh plugins
 zplug "plugins/git",   from:oh-my-zsh, if:"(( $+commands[git] ))",  nice:10
 zplug "lib/theme-and-appearance", from:oh-my-zsh
-zplug "themes/avit", from:oh-my-zsh
 zplug "lib/clipboard", from:oh-my-zsh, if:"[[ $OSTYPE == *darwin* ]]"
 zplug "plugins/macports", from:oh-my-zsh, if:"[[ $OSTYPE == *darwin* ]]"
 zplug "plugins/zsh_reload", from:oh-my-zsh
 zplug "plugins/colorize", from:oh-my-zsh
 zplug "plugins/pip", from:oh-my-zsh
+
+#other zsh plugin
 zplug "zsh-users/zsh-completions", if:"(( $+commands[pip] ))"
 zplug "zsh-users/zsh-autosuggestions", nice:1
 zplug "felixr/docker-zsh-completion"
@@ -37,7 +34,10 @@ zplug "zsh-users/zsh-syntax-highlighting", nice:10
 zplug "Tarrasch/zsh-autoenv"
 zplug "zplug/zplug"
 zplug "chrissicool/zsh-256color"
+zplug "tcnksm/docker-alias", use:zshrc
 
+#theme
+zplug "kenkuang1213/81a9dd6aeab6241210fdfd0363c6861a", from:gist, nice:19
 #####################################################################
 # completions
 #####################################################################
@@ -100,15 +100,6 @@ zplug "tj/n", as:command, use:'bin/n', hook-build:"make install"
 # Supports checking out a specific branch/tag/commit
 zplug "b4b4r07/enhancd", at:v1
 zplug "mollifier/anyframe", at:4c23cb60
-
-# Install if "if:" tag returns true
-zplug "hchbaw/opp.zsh", if:"(( ${ZSH_VERSION%%.*} < 5 ))"
-
-# Can manage gist file just like other packages
-zplug "b4b4r07/79ee61f7c140c63d2786", \
-    from:gist, \
-    as:command, \
-    use:get_last_pane_path.sh
 
 # Install plugins if there are plugins that have not been installed
 if ! zplug check --verbose; then
@@ -185,7 +176,7 @@ zplug load --verbose
 # alias
 alias jj=jobs
 
-# Env Variable
+# Env Variables
 if [[ -d $HOME/.zshenv ]];then
     source $HONE/.zshenv
 fi
