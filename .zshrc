@@ -25,6 +25,7 @@ zplug "plugins/git",   from:oh-my-zsh, if:"(( $+commands[git] ))",  nice:10
 zplug "lib/theme-and-appearance", from:oh-my-zsh
 zplug "themes/avit", from:oh-my-zsh
 zplug "lib/clipboard", from:oh-my-zsh, if:"[[ $OSTYPE == *darwin* ]]"
+zplug "plugins/macports", from:oh-my-zsh, if:"[[ $OSTYPE == *darwin* ]]"
 zplug "plugins/zsh_reload", from:oh-my-zsh
 zplug "plugins/colorize", from:oh-my-zsh
 zplug "plugins/pip", from:oh-my-zsh
