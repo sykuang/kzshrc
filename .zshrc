@@ -24,6 +24,7 @@ zplug "plugins/macports", from:oh-my-zsh, if:"[[ $OSTYPE == *darwin* ]]"
 zplug "plugins/zsh_reload", from:oh-my-zsh
 zplug "plugins/colorize", from:oh-my-zsh
 zplug "plugins/pip", from:oh-my-zsh
+zplug "plugins/repo", from:oh-my-zsh
 
 #other zsh plugin
 zplug "zsh-users/zsh-completions", if:"(( $+commands[pip] ))"
@@ -135,6 +136,9 @@ export DISABLE_AUTO_TITLE=true
 export DISABLE_CORRECTION=true
 #export DISABLE_UNTRACKED_FILES_DIRTY=true # Improves repo status check time.
 export DISABLE_UPDATE_PROMPT=true
+
+export UPDATE_ZSH_DAYS=1
+### fzf ###
 export EDITOR='vim'
 if [[ `command -v ag` ]]; then
     export FZF_DEFAULT_COMMAND='ag -g ""'
@@ -143,9 +147,8 @@ fi
 export FZF_DEFAULT_OPTS='--multi'
 export NOTIFY_COMMAND_COMPLETE_TIMEOUT=300
 export NVIM_TUI_ENABLE_CURSOR_SHAPE=1 # https://github.com/neovim/neovim/pull/2007#issuecomment-74863439
-export UPDATE_ZSH_DAYS=1
-### fzf ###
 export FZF_COMPLETION_TRIGGER='**'
+FZF_CTRL_T_COMMAND=""
 
 ### AUTOSUGGESTIONS ###
 if zplug check zsh-users/zsh-autosuggestions; then
