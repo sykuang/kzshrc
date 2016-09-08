@@ -10,7 +10,7 @@ source ~/.zplug/init.zsh
 
 # Install commands
 zplug "Jxck/dotfiles", as:command, use:"bin/{histuniq,color}"
-zplug "kenkuang1213/dotfiles", as:command, use:"bin/genCtags"
+zplug "kenkuang1213/Kcmds", as:command, use:"bin/genCtags"
 zplug "k4rthik/git-cal", as:command, frozen:1
 zplug "junegunn/fzf-bin", as:command, from:gh-r, rename-to:fzf
 zplug "junegunn/fzf", as:command, use:bin/fzf-tmux
