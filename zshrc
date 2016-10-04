@@ -36,9 +36,10 @@ zplug "Tarrasch/zsh-autoenv"
 zplug "zplug/zplug"
 zplug "chrissicool/zsh-256color"
 zplug "tcnksm/docker-alias", use:zshrc
+zplug "lukechilds/zsh-nvm"
 
 #theme
-zplug "kenkuang1213/81a9dd6aeab6241210fdfd0363c6861a", from:gist, nice:19
+zplug "kenkuang1213/81a9dd6aeab6241210fdfd0363c6861a", from:gist, nice:10
 #####################################################################
 # completions
 #####################################################################
