@@ -24,14 +24,14 @@ zplug "plugins/zsh_reload", from:oh-my-zsh
 zplug "plugins/colorize", from:oh-my-zsh
 zplug "plugins/pip", from:oh-my-zsh
 zplug "plugins/repo", from:oh-my-zsh
-zplug "olivierverdier/zsh-git-prompt", nice:10, use:"zshrc.sh"
+zplug "olivierverdier/zsh-git-prompt", use:"zshrc.sh", hook-build:"curl -sSL https://get.haskellstack.org/ | sh;stack setup;stack build && stack install"
 
 #other zsh plugin
 zplug "zsh-users/zsh-completions", if:"(( $+commands[pip] ))"
-zplug "zsh-users/zsh-autosuggestions", nice:1
+zplug "zsh-users/zsh-autosuggestions"
 zplug "felixr/docker-zsh-completion"
 zplug "zsh-users/zsh-history-substring-search"
-zplug "zsh-users/zsh-syntax-highlighting", nice:10
+zplug "zsh-users/zsh-syntax-highlighting" 
 zplug "Tarrasch/zsh-autoenv"
 zplug "zplug/zplug"
 zplug "chrissicool/zsh-256color"
@@ -39,7 +39,7 @@ zplug "tcnksm/docker-alias", use:zshrc
 zplug "lukechilds/zsh-nvm"
 
 #theme
-zplug "kenkuang1213/81a9dd6aeab6241210fdfd0363c6861a", from:gist, as:theme, nice:10 
+zplug "kenkuang1213/81a9dd6aeab6241210fdfd0363c6861a", from:gist, as:theme
 #####################################################################
 # completions
 #####################################################################
@@ -207,6 +207,8 @@ function git_prompt_status(){
     fi
 }
 export ZSH_THEME_GIT_PROMPT_CACHE=1
+export ZPLUG_USE_CACHE=1
+export GIT_PROMPT_EXECUTABLE="haskell"
 # ========================================================
 # Customize environment variables
 # ========================================================
