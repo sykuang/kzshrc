@@ -17,7 +17,6 @@ zplug "junegunn/fzf", as:command, use:bin/fzf-tmux
 zplug "junegunn/fzf", use:"shell/*.zsh"
 
 # oh-my-zsh plugins
-zplug "plugins/git",   from:oh-my-zsh, if:"(( $+commands[git] ))",  nice:10
 zplug "lib/theme-and-appearance", from:oh-my-zsh
 zplug "lib/clipboard", from:oh-my-zsh, if:"[[ $OSTYPE == *darwin* ]]"
 zplug "plugins/macports", from:oh-my-zsh, if:"[[ $OSTYPE == *darwin* ]]"
@@ -25,6 +24,7 @@ zplug "plugins/zsh_reload", from:oh-my-zsh
 zplug "plugins/colorize", from:oh-my-zsh
 zplug "plugins/pip", from:oh-my-zsh
 zplug "plugins/repo", from:oh-my-zsh
+zplug "olivierverdier/zsh-git-prompt", nice:10, use:"zshrc.sh"
 
 #other zsh plugin
 zplug "zsh-users/zsh-completions", if:"(( $+commands[pip] ))"
@@ -135,7 +135,7 @@ unset COMPLETION_WAITING_DOTS # https://github.com/tarruda/zsh-autosuggestions#k
 #export COMPLETION_WAITING_DOTS=true
 export DISABLE_AUTO_TITLE=true
 export DISABLE_CORRECTION=true
-#export DISABLE_UNTRACKED_FILES_DIRTY=true # Improves repo status check time.
+export DISABLE_UNTRACKED_FILES_DIRTY=true # Improves repo status check time.
 export DISABLE_UPDATE_PROMPT=true
 
 export UPDATE_ZSH_DAYS=1
@@ -174,6 +174,39 @@ ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern cursor)
 # Then, source plugins and add commands to $PATH
 zplug load --verbose
 
+### Porting olivierverdier/zsh-git-prompt to oh-my-zsh git ###
+function git_prompt_info(){
+    precmd_update_git_vars
+    echo "%{$fg[green]%}$GIT_BRANCH%{${reset_color}%}"
+}
+function git_prompt_status(){
+    if [ -n "$__CURRENT_GIT_STATUS" ]; then
+        if [ "$GIT_BEHIND" -ne "0" ]; then
+            STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_BEHIND$GIT_BEHIND%{${reset_color}%}"
+        fi
+        if [ "$GIT_AHEAD" -ne "0" ]; then
+            STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_AHEAD$GIT_AHEAD%{${reset_color}%}"
+        fi
+        STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_SEPARATOR"
+        if [ "$GIT_STAGED" -ne "0" ]; then
+            STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_STAGED$GIT_STAGED%{${reset_color}%}"
+        fi
+        if [ "$GIT_CONFLICTS" -ne "0" ]; then
+            STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_CONFLICTS$GIT_CONFLICTS%{${reset_color}%}"
+        fi
+        if [ "$GIT_CHANGED" -ne "0" ]; then
+            STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_CHANGED$GIT_CHANGED%{${reset_color}%}"
+        fi
+        if [ "$GIT_UNTRACKED" -ne "0" ]; then
+            STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_UNTRACKED%{${reset_color}%}"
+        fi
+        if [ "$GIT_CHANGED" -eq "0" ] && [ "$GIT_CONFLICTS" -eq "0" ] && [ "$GIT_STAGED" -eq "0" ] && [ "$GIT_UNTRACKED" -eq "0" ]; then
+            STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_CLEAN"
+        fi
+        echo "$STATUS"
+    fi
+}
+export ZSH_THEME_GIT_PROMPT_CACHE=1
 # ========================================================
 # Customize environment variables
 # ========================================================
