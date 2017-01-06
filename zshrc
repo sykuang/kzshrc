@@ -4,6 +4,7 @@
 # Install zplug if you have not intalled yet.
 if [[ ! -d $HOME/.zplug ]]; then
     curl -sL zplug.sh/installer | zsh
+    source ~/.zplug/init.zsh && zplug update --self
 fi
 
 source ~/.zplug/init.zsh
@@ -11,10 +12,7 @@ source ~/.zplug/init.zsh
 # Install commands
 zplug "Jxck/dotfiles", as:command, use:"bin/{histuniq,color}"
 zplug "kenkuang1213/Kcmds", as:command, use:"bin/genCtags"
-zplug "k4rthik/git-cal", as:command, frozen:1
-zplug "junegunn/fzf-bin", as:command, from:gh-r, rename-to:fzf
-zplug "junegunn/fzf", as:command, use:bin/fzf-tmux
-zplug "junegunn/fzf", use:"shell/*.zsh"
+zplug "junegunn/fzf", as:command, use:"bin/{fzf,fzf-tmux}", hook-build:'./install --key-bindings --completion --no-update-rc'
 
 # oh-my-zsh plugins
 zplug "lib/theme-and-appearance", from:oh-my-zsh
@@ -27,16 +25,22 @@ zplug "plugins/repo", from:oh-my-zsh
 zplug "olivierverdier/zsh-git-prompt", use:"zshrc.sh", hook-build:"curl -sSL https://get.haskellstack.org/ | sh;stack setup;stack build && stack install"
 
 #other zsh plugin
-zplug "zsh-users/zsh-completions", if:"(( $+commands[pip] ))"
-zplug "zsh-users/zsh-autosuggestions"
+zplug "zsh-users/zsh-completions",  defer:2
+zplug "zsh-users/zsh-autosuggestions",  defer:2
 zplug "felixr/docker-zsh-completion"
-zplug "zsh-users/zsh-history-substring-search"
-zplug "zsh-users/zsh-syntax-highlighting" 
+zplug "zsh-users/zsh-history-substring-search", defer:3
+zplug "zsh-users/zsh-syntax-highlighting", defer:3
 zplug "Tarrasch/zsh-autoenv"
 zplug "zplug/zplug"
 zplug "chrissicool/zsh-256color"
 zplug "tcnksm/docker-alias", use:zshrc
 zplug "lukechilds/zsh-nvm"
+
+# prezto
+zplug "modules/git", from:prezto
+zplug "modules/homebrew", from:prezto, if:"[[ $OSTYPE == *darwin* ]]"
+zplug "modules/node", from:prezto
+zplug "modules/osx", from:prezto, if:"[[ $OSTYPE == *darwin* ]]"
 
 #theme
 zplug "kenkuang1213/81a9dd6aeab6241210fdfd0363c6861a", from:gist, as:theme
@@ -131,8 +135,6 @@ export HISTSIZE=11000
 export SAVEHIST=10000
 export HISTFILE=~/.zsh_history
 
-unset COMPLETION_WAITING_DOTS # https://github.com/tarruda/zsh-autosuggestions#known-issues
-#export COMPLETION_WAITING_DOTS=true
 export DISABLE_AUTO_TITLE=true
 export DISABLE_CORRECTION=true
 export DISABLE_UNTRACKED_FILES_DIRTY=true # Improves repo status check time.
@@ -140,6 +142,7 @@ export DISABLE_UPDATE_PROMPT=true
 
 export UPDATE_ZSH_DAYS=1
 ### fzf ###
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 export EDITOR='vim'
 if [[ `command -v ag` ]]; then
     export FZF_DEFAULT_COMMAND='ag -g ""'
@@ -149,7 +152,7 @@ export FZF_DEFAULT_OPTS='--multi'
 export NOTIFY_COMMAND_COMPLETE_TIMEOUT=300
 export NVIM_TUI_ENABLE_CURSOR_SHAPE=1 # https://github.com/neovim/neovim/pull/2007#issuecomment-74863439
 export FZF_COMPLETION_TRIGGER='**'
-FZF_CTRL_T_COMMAND=""
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
 ### AUTOSUGGESTIONS ###
 if zplug check zsh-users/zsh-autosuggestions; then
@@ -207,7 +210,7 @@ function git_prompt_status(){
     fi
 }
 export ZSH_THEME_GIT_PROMPT_CACHE=1
-export ZPLUG_USE_CACHE=1
+export ZPLUG_USE_CACHE=0
 export GIT_PROMPT_EXECUTABLE="haskell"
 # ========================================================
 # Customize environment variables
