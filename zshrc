@@ -212,6 +212,10 @@ function git_prompt_status(){
 export ZSH_THEME_GIT_PROMPT_CACHE=1
 export ZPLUG_USE_CACHE=0
 export GIT_PROMPT_EXECUTABLE="haskell"
+
+### zsh-nvm ####
+export NVM_LAZY_LOAD=true
+
 # ========================================================
 # Customize environment variables
 # ========================================================
