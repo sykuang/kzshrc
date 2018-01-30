@@ -12,8 +12,11 @@ source ~/.zplug/init.zsh
 # Install commands
 zplug "Jxck/dotfiles", as:command, use:"bin/{histuniq,color}"
 zplug "kenkuang1213/Kcmds", as:command, use:"bin/genCtags"
-zplug "junegunn/fzf", as:command, use:"bin/{fzf,fzf-tmux}", hook-build:'./install --key-bindings --completion --no-update-rc'
-
+zplug "jhawthorn/fzy", \
+    as:command, \
+    rename-to:fzy, \
+    hook-build:"make && sudo make install"
+zplug "b4b4r07/enhancd", at:v1
 # oh-my-zsh plugins
 zplug "lib/theme-and-appearance", from:oh-my-zsh
 zplug "lib/clipboard", from:oh-my-zsh, if:"[[ $OSTYPE == *darwin* ]]"
@@ -142,7 +145,6 @@ export DISABLE_UPDATE_PROMPT=true
 
 export UPDATE_ZSH_DAYS=1
 ### fzf ###
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 export EDITOR='vim'
 if [[ `command -v ag` ]]; then
     export FZF_DEFAULT_COMMAND='ag -g ""'
@@ -225,4 +227,10 @@ alias jj=jobs
 # Env Variables
 if [[ -d $HOME/.zshenv ]];then
     source $HONE/.zshenv
+fi
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+if zplug check b4b4r07/enhancd; then
+    # setting if enhancd is available
+    export ENHANCD_FILTER=fzf-tmux
 fi
