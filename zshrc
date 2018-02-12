@@ -148,8 +148,7 @@ fi
 # ZSH Hightlight
 ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern cursor)
 
-# Then, source plugins and add commands to $PATH
-zplug load --verbose
+
 
 ### Porting olivierverdier/zsh-git-prompt to oh-my-zsh git ###
 function git_prompt_info(){
@@ -183,8 +182,8 @@ function git_prompt_status(){
         echo "$STATUS"
     fi
 }
-export ZSH_THEME_GIT_PROMPT_CACHE=1
-export ZPLUG_USE_CACHE=0
+export ZSH_THEME_GIT_PROMPT_CACHE=true
+export ZPLUG_USE_CACHE=false
 export GIT_PROMPT_EXECUTABLE="haskell"
 
 ### zsh-nvm ####
@@ -194,7 +193,7 @@ export NVM_LAZY_LOAD=true
 if zplug check junegunn/fzf; then
     [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 fi
-export EDITOR='vim'
+export EDITOR='vi'
 if [[ `command -v ag` ]]; then
     export FZF_DEFAULT_COMMAND='ag -g ""'
     export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
@@ -204,7 +203,8 @@ export NOTIFY_COMMAND_COMPLETE_TIMEOUT=300
 export NVIM_TUI_ENABLE_CURSOR_SHAPE=1 # https://github.com/neovim/neovim/pull/2007#issuecomment-74863439
 export FZF_COMPLETION_TRIGGER='**'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-
+# Then, source plugins and add commands to $PATH
+zplug load
 # ========================================================
 # Customize environment variables
 # ========================================================
