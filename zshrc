@@ -10,13 +10,10 @@ fi
 source ~/.zplug/init.zsh
 
 # Install commands
-zplug "Jxck/dotfiles", as:command, use:"bin/{histuniq,color}"
-zplug "kenkuang1213/Kcmds", as:command, use:"bin/genCtags"
 zplug "jhawthorn/fzy", \
     as:command, \
     rename-to:fzy, \
     hook-build:"make && sudo make install"
-zplug "b4b4r07/enhancd", at:v1
 # oh-my-zsh plugins
 zplug "lib/theme-and-appearance", from:oh-my-zsh
 zplug "lib/clipboard", from:oh-my-zsh, if:"[[ $OSTYPE == *darwin* ]]"
@@ -38,11 +35,12 @@ zplug "zplug/zplug"
 zplug "chrissicool/zsh-256color"
 zplug "tcnksm/docker-alias", use:zshrc
 zplug "lukechilds/zsh-nvm"
+zplug "junegunn/fzf",  hook-build: "sh install --no-bash --no-fish --update-rc"
 
 # prezto
 zplug "modules/git", from:prezto
 zplug "modules/homebrew", from:prezto, if:"[[ $OSTYPE == *darwin* ]]"
-zplug "modules/node", from:prezto
+zplug "modules/node", from:prezto, if:"[[ which node ]]"
 zplug "modules/osx", from:prezto, if:"[[ $OSTYPE == *darwin* ]]"
 
 #theme
@@ -95,21 +93,6 @@ cdpath=($HOME)
 
 zstyle ':completion:*:processes' command "ps -u $USER -o pid,stat,%cpu,%mem,cputime,command"
 
-# auto-fu.zsh
-# function zle-line-init () {
-#     auto-fu-init
-# }
-# zle -N zle-line-init
-# zstyle ':completion:*' completer _oldlist _complete
-
-
-# Run a command after a plugin is installed/updated
-zplug "tj/n", as:command, use:'bin/n', hook-build:"make install"
-
-# Supports checking out a specific branch/tag/commit
-zplug "b4b4r07/enhancd", at:v1
-zplug "mollifier/anyframe", at:4c23cb60
-
 # Install plugins if there are plugins that have not been installed
 if ! zplug check --verbose; then
     printf "Install? [y/N]: "
@@ -144,17 +127,6 @@ export DISABLE_UNTRACKED_FILES_DIRTY=true # Improves repo status check time.
 export DISABLE_UPDATE_PROMPT=true
 
 export UPDATE_ZSH_DAYS=1
-### fzf ###
-export EDITOR='vim'
-if [[ `command -v ag` ]]; then
-    export FZF_DEFAULT_COMMAND='ag -g ""'
-    export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-fi
-export FZF_DEFAULT_OPTS='--multi'
-export NOTIFY_COMMAND_COMPLETE_TIMEOUT=300
-export NVIM_TUI_ENABLE_CURSOR_SHAPE=1 # https://github.com/neovim/neovim/pull/2007#issuecomment-74863439
-export FZF_COMPLETION_TRIGGER='**'
-export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
 ### AUTOSUGGESTIONS ###
 if zplug check zsh-users/zsh-autosuggestions; then
@@ -174,7 +146,7 @@ if zplug check zsh-users/zsh-history-substring-search; then
 fi
 
 # ZSH Hightlight
-ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern cursor) 
+ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern cursor)
 
 # Then, source plugins and add commands to $PATH
 zplug load --verbose
@@ -218,6 +190,21 @@ export GIT_PROMPT_EXECUTABLE="haskell"
 ### zsh-nvm ####
 export NVM_LAZY_LOAD=true
 
+### fzf ###
+if zplug check junegunn/fzf; then
+    [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+fi
+export EDITOR='vim'
+if [[ `command -v ag` ]]; then
+    export FZF_DEFAULT_COMMAND='ag -g ""'
+    export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+fi
+export FZF_DEFAULT_OPTS='--multi'
+export NOTIFY_COMMAND_COMPLETE_TIMEOUT=300
+export NVIM_TUI_ENABLE_CURSOR_SHAPE=1 # https://github.com/neovim/neovim/pull/2007#issuecomment-74863439
+export FZF_COMPLETION_TRIGGER='**'
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+
 # ========================================================
 # Customize environment variables
 # ========================================================
@@ -227,10 +214,4 @@ alias jj=jobs
 # Env Variables
 if [[ -d $HOME/.zshenv ]];then
     source $HONE/.zshenv
-fi
-
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-if zplug check b4b4r07/enhancd; then
-    # setting if enhancd is available
-    export ENHANCD_FILTER=fzf-tmux
 fi
