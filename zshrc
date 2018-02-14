@@ -104,6 +104,7 @@ fi
 # ========================================================
 # Set ZSH opt
 # ========================================================
+
 setopt autopushd
 # ZSH history
 setopt append_history
@@ -183,7 +184,7 @@ function git_prompt_status(){
     fi
 }
 export ZSH_THEME_GIT_PROMPT_CACHE=true
-export ZPLUG_USE_CACHE=false
+export ZPLUG_USE_CACHE=true
 export GIT_PROMPT_EXECUTABLE="haskell"
 
 ### zsh-nvm ####
