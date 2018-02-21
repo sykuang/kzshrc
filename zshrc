@@ -213,6 +213,6 @@ zplug load
 alias jj=jobs
 
 # Env Variables
-if [[ -d $HOME/.zshenv ]];then
-    source $HONE/.zshenv
+if [[ -f $HOME/.zshenv ]];then
+    source $HOME/.zshenv
 fi
