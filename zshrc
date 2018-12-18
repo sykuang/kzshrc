@@ -16,13 +16,11 @@ zplug "jhawthorn/fzy", \
     hook-build:"make && sudo make install"
 # oh-my-zsh plugins
 zplug "lib/theme-and-appearance", from:oh-my-zsh
-zplug "lib/clipboard", from:oh-my-zsh, if:"[[ $OSTYPE == *darwin* ]]"
-zplug "plugins/macports", from:oh-my-zsh, if:"[[ $OSTYPE == *darwin* ]]"
 zplug "plugins/zsh_reload", from:oh-my-zsh
 zplug "plugins/colorize", from:oh-my-zsh
-zplug "plugins/pip", from:oh-my-zsh
+zplug "plugins/pip", from:oh-my-zsh, if:"[[ $(which pip) ]]"
 zplug "plugins/repo", from:oh-my-zsh
-zplug "olivierverdier/zsh-git-prompt", use:"zshrc.sh", hook-build:"curl -sSL https://get.haskellstack.org/ | sh;stack setup;stack build && stack install"
+zplug "olivierverdier/zsh-git-prompt", use:"zshrc.sh"
 
 #other zsh plugin
 zplug "zsh-users/zsh-completions",  defer:2
@@ -38,9 +36,8 @@ zplug "lukechilds/zsh-nvm"
 zplug "junegunn/fzf",  hook-build: "sh install --no-bash --no-fish --update-rc"
 
 # prezto
-zplug "modules/git", from:prezto
+zplug "modules/git", from:prezto, if:"[[ $(which git) ]]"
 zplug "modules/homebrew", from:prezto, if:"[[ $OSTYPE == *darwin* ]]"
-zplug "modules/node", from:prezto, if:"[[ which node ]]"
 zplug "modules/osx", from:prezto, if:"[[ $OSTYPE == *darwin* ]]"
 
 #theme
@@ -194,10 +191,9 @@ export NVM_LAZY_LOAD=true
 if zplug check junegunn/fzf; then
     [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 fi
-export EDITOR='vi'
-if [[ `command -v ag` ]]; then
-    export FZF_DEFAULT_COMMAND='ag -g ""'
-    export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+export EDITOR='vim'
+if [[ `command -v fd` ]]; then
+    export FZF_DEFAULT_COMMAND='fd --type f'
 fi
 export FZF_DEFAULT_OPTS='--multi'
 export NOTIFY_COMMAND_COMPLETE_TIMEOUT=300
