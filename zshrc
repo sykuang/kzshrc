@@ -9,18 +9,13 @@ fi
 
 source ~/.zplug/init.zsh
 
-# Install commands
-zplug "jhawthorn/fzy", \
-    as:command, \
-    rename-to:fzy, \
-    hook-build:"make && sudo make install"
 # oh-my-zsh plugins
 zplug "lib/theme-and-appearance", from:oh-my-zsh
 zplug "plugins/zsh_reload", from:oh-my-zsh
 zplug "plugins/colorize", from:oh-my-zsh
 zplug "plugins/pip", from:oh-my-zsh, if:"[[ $(which pip) ]]"
 zplug "plugins/repo", from:oh-my-zsh
-zplug "olivierverdier/zsh-git-prompt", use:"zshrc.sh"
+zplug "themes/refined", from:oh-my-zsh
 
 #other zsh plugin
 zplug "zsh-users/zsh-completions",  defer:2
@@ -34,6 +29,7 @@ zplug "chrissicool/zsh-256color"
 zplug "tcnksm/docker-alias", use:zshrc
 zplug "lukechilds/zsh-nvm"
 zplug "junegunn/fzf",  hook-build: "sh install --no-bash --no-fish --update-rc"
+zplug "olivierverdier/zsh-git-prompt", use:"zshrc.sh"
 
 # prezto
 zplug "modules/git", from:prezto, if:"[[ $(which git) ]]"
@@ -41,7 +37,6 @@ zplug "modules/homebrew", from:prezto, if:"[[ $OSTYPE == *darwin* ]]"
 zplug "modules/osx", from:prezto, if:"[[ $OSTYPE == *darwin* ]]"
 
 #theme
-zplug "kenkuang1213/81a9dd6aeab6241210fdfd0363c6861a", from:gist, as:theme
 #####################################################################
 # completions
 #####################################################################
@@ -181,7 +176,6 @@ function git_prompt_status(){
     fi
 }
 export ZSH_THEME_GIT_PROMPT_CACHE=true
-export ZPLUG_USE_CACHE=true
 export GIT_PROMPT_EXECUTABLE="haskell"
 
 ### zsh-nvm ####
