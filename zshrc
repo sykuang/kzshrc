@@ -119,7 +119,7 @@ export DISABLE_CORRECTION=true
 export DISABLE_UNTRACKED_FILES_DIRTY=true # Improves repo status check time.
 export DISABLE_UPDATE_PROMPT=true
 
-export UPDATE_ZSH_DAYS=1
+export UPDATE_ZSH_DAYS=10
 
 ### AUTOSUGGESTIONS ###
 if zplug check zsh-users/zsh-autosuggestions; then
