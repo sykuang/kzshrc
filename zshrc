@@ -3,19 +3,17 @@
 # ========================================================
 # Install zplug if you have not intalled yet.
 if [[ ! -d $HOME/.zplug ]]; then
-    curl -sL zplug.sh/installer | zsh
-    source ~/.zplug/init.zsh && zplug update --self
+    curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh| zsh
 fi
 
-source ~/.zplug/init.zsh
+source $HOME/.zplug/init.zsh
 
 # oh-my-zsh plugins
 zplug "lib/theme-and-appearance", from:oh-my-zsh
-zplug "plugins/zsh_reload", from:oh-my-zsh
 zplug "plugins/colorize", from:oh-my-zsh
 zplug "plugins/pip", from:oh-my-zsh, if:"[[ $(which pip) ]]"
-zplug "plugins/repo", from:oh-my-zsh
-zplug "themes/refined", from:oh-my-zsh
+zplug "plugins/repo", from:oh-my-zsh, if:"[[ $(which repo) ]]"
+zplug "themes/refined", from:oh-my-zsh, as:theme
 
 #other zsh plugin
 zplug "zsh-users/zsh-completions",  defer:2
@@ -24,17 +22,14 @@ zplug "felixr/docker-zsh-completion"
 zplug "zsh-users/zsh-history-substring-search", defer:3
 zplug "zsh-users/zsh-syntax-highlighting", defer:3
 zplug "Tarrasch/zsh-autoenv"
-zplug "zplug/zplug"
+zplug "zplug/zplug", hook-build:'zplug --self-manage'
 zplug "chrissicool/zsh-256color"
-zplug "tcnksm/docker-alias", use:zshrc
-zplug "lukechilds/zsh-nvm"
 zplug "junegunn/fzf",  hook-build: "sh install --no-bash --no-fish --update-rc"
-zplug "olivierverdier/zsh-git-prompt", use:"zshrc.sh"
+zplug "olivierverdier/zsh-git-prompt", use:"zshrc.sh", hook-build: "stack setup && stack build && stack install"
 
 # prezto
 zplug "modules/git", from:prezto, if:"[[ $(which git) ]]"
-zplug "modules/homebrew", from:prezto, if:"[[ $OSTYPE == *darwin* ]]"
-zplug "modules/osx", from:prezto, if:"[[ $OSTYPE == *darwin* ]]"
+zplug "modules/homebrew", from:prezto, if:"[[ $OSTYPE == *darwin* && $(which brew) ]]"
 
 #theme
 #####################################################################
@@ -86,11 +81,8 @@ cdpath=($HOME)
 zstyle ':completion:*:processes' command "ps -u $USER -o pid,stat,%cpu,%mem,cputime,command"
 
 # Install plugins if there are plugins that have not been installed
-if ! zplug check --verbose; then
-    printf "Install? [y/N]: "
-    if read -q; then
-        echo; zplug install
-    fi
+if ! zplug check; then
+   zplug install
 fi
 
 # ========================================================
@@ -178,14 +170,10 @@ function git_prompt_status(){
 export ZSH_THEME_GIT_PROMPT_CACHE=true
 export GIT_PROMPT_EXECUTABLE="haskell"
 
-### zsh-nvm ####
-export NVM_LAZY_LOAD=true
-
 ### fzf ###
 if zplug check junegunn/fzf; then
     [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 fi
-export EDITOR='vim'
 if [[ `command -v fd` ]]; then
     export FZF_DEFAULT_COMMAND='fd --type f'
 fi
@@ -194,6 +182,9 @@ export NOTIFY_COMMAND_COMPLETE_TIMEOUT=300
 export NVIM_TUI_ENABLE_CURSOR_SHAPE=1 # https://github.com/neovim/neovim/pull/2007#issuecomment-74863439
 export FZF_COMPLETION_TRIGGER='**'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+
+
+export EDITOR='vim'
 # Then, source plugins and add commands to $PATH
 zplug load
 # ========================================================
