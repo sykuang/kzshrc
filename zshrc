@@ -192,6 +192,8 @@ zplug load
 # ========================================================
 # alias
 alias jj=jobs
+bindkey "^[[H" beginning-of-line      # [Home] - Go to beginning of line
+bindkey "^[[F" end-of-line      # [Home] - Go to beginning of line
 
 # Env Variables
 if [[ -f $HOME/.zshenv ]];then
