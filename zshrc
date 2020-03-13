@@ -1,201 +1,87 @@
-# ========================================================
-# Initialization zplug
-# ========================================================
-# Install zplug if you have not intalled yet.
-if [[ ! -d $HOME/.zplug ]]; then
-    curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh| zsh
+### Added by Zinit's installer
+if [[ ! -f $HOME/.zinit/bin/zinit.zsh ]]; then
+    print -P "%F{33}▓▒░ %F{220}Installing DHARMA Initiative Plugin Manager (zdharma/zinit)…%f"
+    command mkdir -p "$HOME/.zinit" && command chmod g-rwX "$HOME/.zinit"
+    command git clone https://github.com/zdharma/zinit "$HOME/.zinit/bin" && \
+        print -P "%F{33}▓▒░ %F{34}Installation successful.%f%b" || \
+        print -P "%F{160}▓▒░ The clone has failed.%f%b"
 fi
 
-source $HOME/.zplug/init.zsh
+source "$HOME/.zinit/bin/zinit.zsh"
+autoload -Uz _zinit
+(( ${+_comps} )) && _comps[zinit]=_zinit
 
-# oh-my-zsh plugins
-zplug "lib/theme-and-appearance", from:oh-my-zsh
-zplug "plugins/colorize", from:oh-my-zsh
-zplug "plugins/pip", from:oh-my-zsh, if:"[[ $(which pip) ]]"
-zplug "plugins/repo", from:oh-my-zsh, if:"[[ $(which repo) ]]"
-zplug "themes/refined", from:oh-my-zsh, as:theme
+# Load a few important annexes, without Turbo
+# (this is currently required for annexes)
+zinit light-mode for \
+    zinit-zsh/z-a-patch-dl \
+    zinit-zsh/z-a-as-monitor \
+    zinit-zsh/z-a-bin-gem-node
 
-#other zsh plugin
-zplug "zsh-users/zsh-completions",  defer:2
-zplug "zsh-users/zsh-autosuggestions",  defer:2
-zplug "felixr/docker-zsh-completion"
-zplug "zsh-users/zsh-history-substring-search", defer:3
-zplug "zsh-users/zsh-syntax-highlighting", defer:3
-zplug "Tarrasch/zsh-autoenv"
-zplug "zplug/zplug", hook-build:'zplug --self-manage'
-zplug "chrissicool/zsh-256color"
-zplug "junegunn/fzf",  hook-build: "sh install --no-bash --no-fish --update-rc"
-zplug "olivierverdier/zsh-git-prompt", use:"zshrc.sh", hook-build: "stack setup && stack build && stack install"
+### End of Zinit's installer chunk
 
-# prezto
-zplug "modules/git", from:prezto, if:"[[ $(which git) ]]"
-zplug "modules/homebrew", from:prezto, if:"[[ $OSTYPE == *darwin* && $(which brew) ]]"
+# Theme
+zinit ice pick"async.zsh" src"pure.zsh" 
+zinit light sindresorhus/pure
 
-#theme
-#####################################################################
+# Autoenv
+zinit ice as"program" make'!' atclone'./direnv hook zsh > zhook.zsh' atpull'%atclone' src"zhook.zsh"
+zinit light direnv/direnv
+
 # completions
-#####################################################################
+zinit wait lucid atload"zicompinit; zicdreplay" blockf for \
+    zsh-users/zsh-completions
 
-# Enable completions
-if [ -d ~/.zsh/comp ]; then
-    fpath=(~/.zsh/comp $fpath)
-    autoload -U ~/.zsh/comp/*(:t)
-fi
+# syntax highlight
+zinit ice lucid wait='0' atinit='zpcompinit'
+zinit light zdharma/fast-syntax-highlighting
 
-zstyle ':completion:*' group-name ''
-zstyle ':completion:*:messages' format '%d'
-zstyle ':completion:*:descriptions' format '%d'
-zstyle ':completion:*:options' verbose yes
-zstyle ':completion:*:values' verbose yes
-zstyle ':completion:*:options' prefix-needed yes
-# Use cache completion
-# apt-get, dpkg (Debian), rpm (Redhat), urpmi (Mandrake), perl -M,
-# bogofilter (zsh 4.2.1 >=), fink, mac_apps...
-zstyle ':completion:*' use-cache true
-zstyle ':completion:*:default' menu select=1
-zstyle ':completion:*' matcher-list \
-    '' \
-    'm:{a-z}={A-Z}' \
-    'l:|=* r:|[.,_-]=* r:|=* m:{a-z}={A-Z}'
-# sudo completions
-zstyle ':completion:*:sudo:*' command-path /usr/local/sbin /usr/local/bin \
-    /usr/sbin /usr/bin /sbin /bin /usr/X11R6/bin
-zstyle ':completion:*' menu select
-zstyle ':completion:*' keep-prefix
-zstyle ':completion:*' completer _oldlist _complete _match _ignored \
-    _approximate _list _history
+# Auto sugggestions
+zinit ice lucid wait="0" atload='_zsh_autosuggest_start'
+zinit light zsh-users/zsh-autosuggestions
 
-autoload -U compinit
-if [ ! -f ~/.zcompdump -o ~/.zshrc -nt ~/.zcompdump ]; then
-    compinit -d ~/.zcompdump
-fi
+# zsh color
+zinit light chrissicool/zsh-256color
 
-# Original complete functions
-compdef '_files -g "*.hs"' runhaskell
-compdef _man w3mman
-compdef _tex platex
+# git diff so fancy
+zinit ice wait"2" lucid as"program" pick"bin/git-dsf"
+zinit light zdharma/zsh-diff-so-fancy
 
-# cd search path
-cdpath=($HOME)
+# git now
+zinit ice wait"2" lucid as"program" pick"git-now"
+zinit light iwata/git-now
 
-zstyle ':completion:*:processes' command "ps -u $USER -o pid,stat,%cpu,%mem,cputime,command"
+# git extras
+zinit ice wait"2" lucid as"program" pick"$ZPFX/bin/git-alias" make"PREFIX=$ZPFX" nocompile
+zinit light tj/git-extras
 
-# Install plugins if there are plugins that have not been installed
-if ! zplug check; then
-   zplug install
-fi
+# OMZ framework
+zinit snippet OMZ::lib/key-bindings.zsh
+zinit snippet OMZ::lib/completion.zsh
+zinit snippet OMZ::lib/history.zsh
+zinit ice svn
+zinit snippet OMZ::plugins/extract
+zinit snippet OMZ::plugins/colored-man-pages/colored-man-pages.plugin.zsh
+zinit snippet OMZ::plugins/sudo/sudo.plugin.zsh
 
-# ========================================================
-# Set ZSH opt
-# ========================================================
+# commands
+zinit light zinit-zsh/z-a-bin-gem-node
+zinit as="null" wait="1" lucid from="gh-r" for \
+    mv="exa* -> exa" sbin       ogham/exa \
+    mv="*/rg -> rg"  sbin		BurntSushi/ripgrep \
+    mv="fd* -> fd"   sbin="fd/fd"  @sharkdp/fd \
+    sbin="fzf"       junegunn/fzf-bin
+zinit ice mv="*.zsh -> _fzf" as="completion"
+zinit snippet 'https://github.com/junegunn/fzf/blob/master/shell/completion.zsh'
+zinit snippet 'https://github.com/junegunn/fzf/blob/master/shell/key-bindings.zsh'
+zinit ice as="completion"
+zinit snippet 'https://github.com/robbyrussell/oh-my-zsh/blob/master/plugins/fd/_fd'
+zinit ice mv="*.zsh -> _exa" as="completion"
+zinit snippet 'https://github.com/ogham/exa/blob/master/contrib/completions.zsh'
+DISABLE_LS_COLORS=true
+export FZF_DEFAULT_COMMAND='fd --type f'
 
-setopt autopushd
-# ZSH history
-setopt append_history
-setopt hist_expire_dups_first
-setopt hist_fcntl_lock
-setopt hist_ignore_all_dups
-setopt hist_lex_words
-setopt hist_reduce_blanks
-setopt hist_save_no_dups
-setopt share_history
-
-export CLICOLOR=1
-export BLOCK_SIZE=human-readable # https://www.gnu.org/software/coreutils/manual/html_node/Block-size.html
-export HISTSIZE=11000
-export SAVEHIST=10000
-export HISTFILE=~/.zsh_history
-
-export DISABLE_AUTO_TITLE=true
-export DISABLE_CORRECTION=true
-export DISABLE_UNTRACKED_FILES_DIRTY=true # Improves repo status check time.
-export DISABLE_UPDATE_PROMPT=true
-
-export UPDATE_ZSH_DAYS=10
-
-### AUTOSUGGESTIONS ###
-if zplug check zsh-users/zsh-autosuggestions; then
-    ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(history-substring-search-up history-substring-search-down) # Add history-substring-search-* widgets to list of widgets that clear the autosuggestion
-    ZSH_AUTOSUGGEST_CLEAR_WIDGETS=("${(@)ZSH_AUTOSUGGEST_CLEAR_WIDGETS:#(up|down)-line-or-history}") # Remove *-line-or-history widgets from list of widgets that clear the autosuggestion to avoid conflict with history-substring-search-* widgets
-fi
-
-### KEY BINDINGS ###
-KEYTIMEOUT=1 # Prevents key timeout lag.
-bindkey -v
-
-# Bind UP and DOWN arrow keys for subsstring search.
-if zplug check zsh-users/zsh-history-substring-search; then
-    zmodload zsh/terminfo
-    bindkey "$terminfo[kcuu1]" history-substring-search-up
-    bindkey "$terminfo[kcud1]" history-substring-search-down
-fi
-
-# ZSH Hightlight
-ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern cursor)
-
-
-
-### Porting olivierverdier/zsh-git-prompt to oh-my-zsh git ###
-function git_prompt_info(){
-    precmd_update_git_vars
-    echo "%{$fg[green]%}$GIT_BRANCH%{${reset_color}%}"
-}
-function git_prompt_status(){
-    if [ -n "$__CURRENT_GIT_STATUS" ]; then
-        if [ "$GIT_BEHIND" -ne "0" ]; then
-            STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_BEHIND$GIT_BEHIND%{${reset_color}%}"
-        fi
-        if [ "$GIT_AHEAD" -ne "0" ]; then
-            STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_AHEAD$GIT_AHEAD%{${reset_color}%}"
-        fi
-        STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_SEPARATOR"
-        if [ "$GIT_STAGED" -ne "0" ]; then
-            STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_STAGED$GIT_STAGED%{${reset_color}%}"
-        fi
-        if [ "$GIT_CONFLICTS" -ne "0" ]; then
-            STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_CONFLICTS$GIT_CONFLICTS%{${reset_color}%}"
-        fi
-        if [ "$GIT_CHANGED" -ne "0" ]; then
-            STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_CHANGED$GIT_CHANGED%{${reset_color}%}"
-        fi
-        if [ "$GIT_UNTRACKED" -ne "0" ]; then
-            STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_UNTRACKED%{${reset_color}%}"
-        fi
-        if [ "$GIT_CHANGED" -eq "0" ] && [ "$GIT_CONFLICTS" -eq "0" ] && [ "$GIT_STAGED" -eq "0" ] && [ "$GIT_UNTRACKED" -eq "0" ]; then
-            STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_CLEAN"
-        fi
-        echo "$STATUS"
-    fi
-}
-export ZSH_THEME_GIT_PROMPT_CACHE=true
-export GIT_PROMPT_EXECUTABLE="haskell"
-
-### fzf ###
-if zplug check junegunn/fzf; then
-    [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-fi
-if [[ `command -v fd` ]]; then
-    export FZF_DEFAULT_COMMAND='fd --type f'
-fi
-export FZF_DEFAULT_OPTS='--multi'
-export NOTIFY_COMMAND_COMPLETE_TIMEOUT=300
-export NVIM_TUI_ENABLE_CURSOR_SHAPE=1 # https://github.com/neovim/neovim/pull/2007#issuecomment-74863439
-export FZF_COMPLETION_TRIGGER='**'
-export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-
-
-export EDITOR='vim'
-# Then, source plugins and add commands to $PATH
-zplug load
-# ========================================================
-# Customize environment variables
-# ========================================================
-# alias
-alias jj=jobs
-bindkey "^[[H" beginning-of-line      # [Home] - Go to beginning of line
-bindkey "^[[F" end-of-line      # [Home] - Go to beginning of line
-
-# Env Variables
-if [[ -f $HOME/.zshenv ]];then
-    source $HOME/.zshenv
-fi
+# Alias
+alias ls=exa
+alias gl="git log --oneline"
+alias jj="jobs"
