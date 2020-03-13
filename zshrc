@@ -83,5 +83,13 @@ export FZF_DEFAULT_COMMAND='fd --type f'
 
 # Alias
 alias ls=exa
-alias gl="git log --oneline"
+# Git related alias
+alias gl="git log --graph --pretty=oneline --abbrev-commit"
+alias gst="git status"
+alias glp="git pull --rebase"
+alias gc="git commit"
+alias ga="git commit --amend"
+alias gcm="git commit -m"
+alias gp="git push"
+alias gpg="git push HEAD:refs/for/master"
 alias jj="jobs"
