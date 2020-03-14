@@ -81,15 +81,9 @@ zinit snippet 'https://github.com/ogham/exa/blob/master/contrib/completions.zsh'
 DISABLE_LS_COLORS=true
 export FZF_DEFAULT_COMMAND='fd --type f'
 
+# git-cmd
+zinit load sykuang/zsh-git-cmd
+
 # Alias
 alias ls=exa
-# Git related alias
-alias gl="git log --graph --pretty=oneline --abbrev-commit"
-alias gst="git status"
-alias glp="git pull --rebase"
-alias gc="git commit"
-alias ga="git commit --amend"
-alias gcm="git commit -m"
-alias gp="git push"
-alias gpg="git push HEAD:refs/for/master"
 alias jj="jobs"
