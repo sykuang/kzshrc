@@ -29,7 +29,7 @@ zinit ice lucid wait src"autoenv.zsh"
 zinit light Tarrasch/zsh-autoenv
 
 # completions
-zinit wait lucid atload"zicompinit; zicdreplay" blockf for \
+zinit wait="0" lucid atload"zicompinit; zicdreplay" blockf for \
     zsh-users/zsh-completions
 
 # syntax highlight
