@@ -21,8 +21,9 @@ zinit light-mode for \
 ### End of Zinit's installer chunk
 
 # Theme
-zinit ice pick"async.zsh" src"pure.zsh"
-zinit light sindresorhus/pure
+# zinit ice pick"async.zsh" src"pure.zsh"
+# zinit light sindresorhus/pure
+eval "$(starship init zsh)"
 
 # Autoenv
 zinit ice lucid wait src"autoenv.zsh"
@@ -64,6 +65,11 @@ zinit snippet OMZ::plugins/extract
 zinit snippet OMZ::plugins/colored-man-pages/colored-man-pages.plugin.zsh
 zinit snippet OMZ::plugins/sudo/sudo.plugin.zsh
 
+# Nvm
+zinit ice wait"2" lucid
+zinit light lukechilds/zsh-nvm
+export NVM_LAZY_LOAD=true
+
 # commands
 zinit light zinit-zsh/z-a-bin-gem-node
 zinit as="null" wait="1" lucid from="gh-r" for \
@@ -84,6 +90,10 @@ export FZF_DEFAULT_COMMAND='fd --type f'
 # git-cmd
 zinit load sykuang/zsh-git-cmd
 
+# Auto pushd
+setopt autopushd pushdminus pushdsilent pushdtohome
+
 # Alias
 alias ls=exa
 alias jj="jobs"
+alias cgrep='rg -g "*.c" -g "*.h" -g "*.cpp" -g "*.cc"'
