@@ -97,3 +97,6 @@ setopt autopushd pushdminus pushdsilent pushdtohome
 alias ls=exa
 alias jj="jobs"
 alias cgrep='rg -g "*.c" -g "*.h" -g "*.cpp" -g "*.cc"'
+if [[ (( $+commands[nvim] )) ]];then
+alias vim=nvim
+fi
