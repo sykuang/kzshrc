@@ -8,7 +8,7 @@ if [[ ! -f $HOME/.zinit/bin/zinit.zsh ]]; then
 fi
 
 source "$HOME/.zinit/bin/zinit.zsh"
-if [[ ! (( $+commands[starship] )) ]];then
+if ((!$+commands[starship])) ;then
 curl -fsSL https://starship.rs/install.sh | bash
 fi
 autoload -Uz _zinit
@@ -97,9 +97,12 @@ zinit load sykuang/zsh-git-cmd
 setopt autopushd pushdminus pushdsilent pushdtohome
 
 # Alias
+if (($+commands[exa])) ;then
 alias ls=exa
+fi
 alias jj="jobs"
 alias cgrep='rg -g "*.c" -g "*.h" -g "*.cpp" -g "*.cc"'
-if [[ (( $+commands[nvim] )) ]];then
+alias mgrep='rg -g "*.mk" -g "Makefile" -g "makefile"'
+if (($+commands[nvim])) ;then
 alias vim=nvim
 fi
