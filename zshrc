@@ -69,9 +69,9 @@ zinit snippet OMZ::plugins/colored-man-pages/colored-man-pages.plugin.zsh
 zinit snippet OMZ::plugins/sudo/sudo.plugin.zsh
 
 # Nvm
+export NVM_AUTO_USE=true
 zinit ice wait"2" lucid
 zinit light lukechilds/zsh-nvm
-export NVM_LAZY_LOAD=true
 
 # commands
 zinit light zinit-zsh/z-a-bin-gem-node
