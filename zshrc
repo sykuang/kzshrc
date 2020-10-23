@@ -86,7 +86,7 @@ zinit snippet 'https://github.com/junegunn/fzf/blob/master/shell/key-bindings.zs
 zinit ice as="completion"
 zinit snippet 'https://github.com/robbyrussell/oh-my-zsh/blob/master/plugins/fd/_fd'
 zinit ice mv="*.zsh -> _exa" as="completion"
-zinit snippet 'https://github.com/ogham/exa/blob/master/contrib/completions.zsh'
+zinit snippet 'https://raw.githubusercontent.com/ogham/exa/0df4264d9229fb65c2eafc2abad8e5c4c0bbf275/completions/completions.zsh'
 DISABLE_LS_COLORS=true
 export FZF_DEFAULT_COMMAND='fd --type f'
 
