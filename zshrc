@@ -26,8 +26,9 @@ zinit light-mode for \
 # Theme
 # zinit ice pick"async.zsh" src"pure.zsh"
 # zinit light sindresorhus/pure
-eval "$(starship init zsh)"
-
+# eval "$(starship init zsh)"
+zinit light romkatv/powerlevel10k
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 # Autoenv
 zinit ice lucid wait src"autoenv.zsh"
 zinit light Tarrasch/zsh-autoenv
@@ -106,3 +107,4 @@ alias mgrep='rg -g "*.mk" -g "Makefile" -g "makefile"'
 if (($+commands[nvim])) ;then
 alias vim=nvim
 fi
+POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD=true
