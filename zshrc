@@ -1,3 +1,10 @@
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
 ### Added by Zinit's installer
 if [[ ! -f $HOME/.zinit/bin/zinit.zsh ]]; then
     print -P "%F{33}▓▒░ %F{220}Installing DHARMA Initiative Plugin Manager (zdharma/zinit)…%f"
@@ -27,8 +34,7 @@ zinit light-mode for \
 # zinit ice pick"async.zsh" src"pure.zsh"
 # zinit light sindresorhus/pure
 # eval "$(starship init zsh)"
-zinit light romkatv/powerlevel10k
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+zinit ice depth=1; zinit light romkatv/powerlevel10k
 # Autoenv
 zinit ice lucid wait src"autoenv.zsh"
 zinit light Tarrasch/zsh-autoenv
@@ -49,15 +55,15 @@ zinit light zsh-users/zsh-autosuggestions
 zinit light chrissicool/zsh-256color
 
 # git diff so fancy
-zinit ice wait"2" lucid as"program" pick"bin/git-dsf"
+zinit ice wait="10" lucid as"program" pick"bin/git-dsf"
 zinit light zdharma/zsh-diff-so-fancy
 
 # git now
-zinit ice wait"2" lucid as"program" pick"git-now"
+zinit ice wait="10" lucid as"program" pick"git-now"
 zinit light iwata/git-now
 
 # git extras
-zinit ice wait"2" lucid as"program" pick"$ZPFX/bin/git-alias" make"PREFIX=$ZPFX" nocompile
+zinit ice wait="5" lucid as"program" pick"$ZPFX/bin/git-alias" make"PREFIX=$ZPFX" nocompile
 zinit light tj/git-extras
 
 # OMZ framework
@@ -107,4 +113,10 @@ alias mgrep='rg -g "*.mk" -g "Makefile" -g "makefile"'
 if (($+commands[nvim])) ;then
 alias vim=nvim
 fi
+<<<<<<< HEAD
 POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD=true
+=======
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+>>>>>>> 21a1bd5... Add p10k.zsh
