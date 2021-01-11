@@ -113,10 +113,7 @@ alias mgrep='rg -g "*.mk" -g "Makefile" -g "makefile"'
 if (($+commands[nvim])) ;then
 alias vim=nvim
 fi
-<<<<<<< HEAD
 POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD=true
-=======
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
->>>>>>> 21a1bd5... Add p10k.zsh
