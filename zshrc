@@ -15,9 +15,9 @@ if [[ ! -f $HOME/.zinit/bin/zinit.zsh ]]; then
 fi
 
 source "$HOME/.zinit/bin/zinit.zsh"
-if ((!$+commands[starship])) ;then
-curl -fsSL https://starship.rs/install.sh | bash
-fi
+# if ((!$+commands[starship])) ;then
+# curl -fsSL https://starship.rs/install.sh | bash
+# fi
 autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
 
