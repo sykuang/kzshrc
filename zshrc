@@ -55,7 +55,7 @@ zinit light zsh-users/zsh-autosuggestions
 zinit light chrissicool/zsh-256color
 
 # git diff so fancy
-zinit ice wait="10" lucid as"program" pick"bin/git-dsf"
+zinit ice wait="2" lucid as"program" pick"bin/git-dsf"
 zinit light zdharma/zsh-diff-so-fancy
 
 # git now
@@ -83,22 +83,37 @@ zinit light lukechilds/zsh-nvm
 # commands
 zinit light zinit-zsh/z-a-bin-gem-node
 zinit as="null" wait="1" lucid from="gh-r" for \
-    mv="exa* -> exa" sbin       ogham/exa \
+    mv="bin/exa -> exa" sbin       ogham/exa \
     mv="*/rg -> rg"  sbin		BurntSushi/ripgrep \
     mv="fd* -> fd"   sbin="fd/fd"  @sharkdp/fd \
-    sbin="fzf"       junegunn/fzf-bin
-zinit ice mv="*.zsh -> _fzf" as="completion"
-zinit snippet 'https://github.com/junegunn/fzf/blob/master/shell/completion.zsh'
-zinit snippet 'https://github.com/junegunn/fzf/blob/master/shell/key-bindings.zsh'
+    sbin="fzf"       junegunn/fzf
+
+# fd settings
 zinit ice as="completion"
 zinit snippet 'https://github.com/robbyrussell/oh-my-zsh/blob/master/plugins/fd/_fd'
+# exa settings
 zinit ice mv="*.zsh -> _exa" as="completion"
-zinit snippet 'https://raw.githubusercontent.com/ogham/exa/0df4264d9229fb65c2eafc2abad8e5c4c0bbf275/completions/completions.zsh'
+zinit as"completion" mv"c* -> _exa" for https://raw.githubusercontent.com/ogham/exa/master/completions/completions.zsh
+# fzf setting
+zinit ice lucid wait"0" atclone"sed -ie 's/fc -rl 1/fc -rli 1/' shell/key-bindings.zsh" \
+      atpull"%atclone" multisrc"shell/{completion,key-bindings}.zsh" id-as"junegunn/fzf_completions" \
+        pick"/dev/null"
+zinit light junegunn/fzf
+
+FZF_DEFAULT_COMMAND='fd --type f'
 DISABLE_LS_COLORS=true
-export FZF_DEFAULT_COMMAND='fd --type f'
+
+
+# fzf-tab
+zinit light Aloxaf/fzf-tab
 
 # git-cmd
 zinit load sykuang/zsh-git-cmd
+
+# alias tip
+zinit ice from'gh-r' as'program'
+zinit light sei40kr/fast-alias-tips-bin
+zinit light sei40kr/zsh-fast-alias-tips
 
 # Auto pushd
 setopt autopushd pushdminus pushdsilent pushdtohome
@@ -117,3 +132,16 @@ POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD=true
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+# Customize function
+function vrg(){
+    if [[ -z $1 ]];then
+        return
+    fi
+    if (($+commands[nvim])) ;then
+        editor=nvim
+    else
+        editor=vim
+    fi
+    rg --vimgrep --color=always $@ |fzf  --ansi --disabled --bind "enter:execute(nvim {})"
+}
