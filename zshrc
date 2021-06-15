@@ -75,15 +75,9 @@ zinit snippet OMZ::plugins/extract
 zinit snippet OMZ::plugins/colored-man-pages/colored-man-pages.plugin.zsh
 zinit snippet OMZ::plugins/sudo/sudo.plugin.zsh
 
-# Nvm
-export NVM_AUTO_USE=true
-zinit ice wait"2" lucid
-zinit light lukechilds/zsh-nvm
-
 # commands
 zinit light zinit-zsh/z-a-bin-gem-node
 zinit as="null" wait="1" lucid from="gh-r" for \
-    mv="bin/exa -> exa" sbin       ogham/exa \
     mv="*/rg -> rg"  sbin		BurntSushi/ripgrep \
     mv="fd* -> fd"   sbin="fd/fd"  @sharkdp/fd \
     sbin="fzf"       junegunn/fzf
@@ -91,9 +85,6 @@ zinit as="null" wait="1" lucid from="gh-r" for \
 # fd settings
 zinit ice as="completion"
 zinit snippet 'https://github.com/robbyrussell/oh-my-zsh/blob/master/plugins/fd/_fd'
-# exa settings
-zinit ice mv="*.zsh -> _exa" as="completion"
-zinit as"completion" mv"c* -> _exa" for https://raw.githubusercontent.com/ogham/exa/master/completions/completions.zsh
 # fzf setting
 zinit ice lucid wait"0" atclone"sed -ie 's/fc -rl 1/fc -rli 1/' shell/key-bindings.zsh" \
       atpull"%atclone" multisrc"shell/{completion,key-bindings}.zsh" id-as"junegunn/fzf_completions" \
@@ -117,6 +108,14 @@ zinit light sei40kr/zsh-fast-alias-tips
 
 # Auto pushd
 setopt autopushd pushdminus pushdsilent pushdtohome
+
+# zsh exa
+zinit light ptavares/zsh-exa
+
+# n-install for node
+if [[ -d $HOME/.n ]]; then
+    path+=("$HOME/.n/bin")
+fi
 
 # Alias
 if (($+commands[exa])) ;then
