@@ -110,7 +110,8 @@ zinit light sei40kr/zsh-fast-alias-tips
 setopt autopushd pushdminus pushdsilent pushdtohome
 
 # zsh exa
-zinit light ptavares/zsh-exa
+zinit ice from"gh-r" as"program" pick"bin/exa"
+zinit light ogham/exa
 
 # n-install for node
 if [[ -d $HOME/.n ]]; then
