@@ -145,3 +145,16 @@ function vrg(){
     fi
     rg --vimgrep --color=always $@ |fzf  --ansi --disabled --bind "enter:execute(nvim {})"
 }
+
+# customize zsh
+[[ ! -f ~/.zshenv ]] || source ~/.zshenv
+
+# Iterm 2 shell integration
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+
+# pyenv
+if command -v pyenv 1>/dev/null 2>&1; then
+    PYENV_ROOT="$HOME/.pyenv"
+    path=("$PYENV_ROOT/shims" $path)
+    eval "$(pyenv init -)"
+fi
