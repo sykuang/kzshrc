@@ -70,7 +70,7 @@ zinit light tj/git-extras
 zinit snippet OMZ::lib/key-bindings.zsh
 zinit snippet OMZ::lib/completion.zsh
 zinit snippet OMZ::lib/history.zsh
-zinit ice svn
+#zinit ice svn
 zinit snippet OMZ::plugins/extract
 zinit snippet OMZ::plugins/colored-man-pages/colored-man-pages.plugin.zsh
 zinit snippet OMZ::plugins/sudo/sudo.plugin.zsh
@@ -158,3 +158,6 @@ if command -v pyenv 1>/dev/null 2>&1; then
     path=("$PYENV_ROOT/shims" $path)
     eval "$(pyenv init -)"
 fi
+
+# local bin
+[[ ! -d $HOME/.local/bin ]] || path+=("$HOME/.local/bin")
