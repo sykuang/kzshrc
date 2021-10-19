@@ -1,3 +1,5 @@
+#!/bin/zsh
+
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
@@ -120,7 +122,7 @@ fi
 
 # Alias
 if (($+commands[exa])) ;then
-alias ls=exa
+alias ls="exa --icons"
 fi
 alias jj="jobs"
 alias cgrep='rg -g "*.c" -g "*.h" -g "*.cpp" -g "*.cc"'
@@ -128,6 +130,10 @@ alias mgrep='rg -g "*.mk" -g "Makefile" -g "makefile"'
 if (($+commands[nvim])) ;then
 alias vim=nvim
 fi
+if (($+commands[byobu])) ;then
+alias bb="byobu"
+fi
+
 POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD=true
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
