@@ -122,16 +122,17 @@ fi
 
 # Alias
 if (($+commands[exa])) ;then
-alias ls="exa --icons"
+  alias ls="exa --icons"
+  alias ll="exa -l --icons --git"
 fi
 alias jj="jobs"
 alias cgrep='rg -g "*.c" -g "*.h" -g "*.cpp" -g "*.cc"'
 alias mgrep='rg -g "*.mk" -g "Makefile" -g "makefile"'
 if (($+commands[nvim])) ;then
-alias vim=nvim
+  alias vim=nvim
 fi
 if (($+commands[byobu])) ;then
-alias bb="byobu"
+  alias bb="byobu"
 fi
 
 POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD=true
