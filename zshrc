@@ -38,7 +38,7 @@ zinit light-mode for \
 # eval "$(starship init zsh)"
 zinit ice depth=1; zinit light romkatv/powerlevel10k
 # Autoenv
-zinit ice lucid wait src"autoenv.zsh"
+zinit ice depth=1;zinit ice lucid wait src"autoenv.zsh"
 zinit light Tarrasch/zsh-autoenv
 
 # completions
@@ -46,8 +46,13 @@ zinit wait="0" lucid atload"zicompinit; zicdreplay" blockf for \
     zsh-users/zsh-completions
 
 # syntax highlight
-zinit ice lucid wait='0' atinit='zpcompinit'
-zinit light zdharma/fast-syntax-highlighting
+zinit wait lucid for \
+ atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
+    zdharma-continuum/fast-syntax-highlighting \
+ blockf \
+    zsh-users/zsh-completions \
+ atload"!_zsh_autosuggest_start" \
+    zsh-users/zsh-autosuggestions
 
 # Auto sugggestions
 zinit ice lucid wait="0" atload='_zsh_autosuggest_start'
@@ -60,13 +65,19 @@ zinit light chrissicool/zsh-256color
 zinit ice wait="2" lucid as"program" pick"bin/git-dsf"
 zinit light zdharma/zsh-diff-so-fancy
 
-# git now
-zinit ice wait="10" lucid as"program" pick"git-now"
-zinit light iwata/git-now
-
-# git extras
-zinit ice wait="5" lucid as"program" pick"$ZPFX/bin/git-alias" make"PREFIX=$ZPFX" nocompile
-zinit light tj/git-extras
+# Extending Git
+zinit as"null" wait"1" lucid for \
+    sbin    Fakerr/git-recall \
+    sbin    cloneopts paulirish/git-open \
+    sbin    paulirish/git-recent \
+    sbin    davidosomething/git-my \
+    sbin atload"export _MENU_THEME=legacy" \
+            arzzen/git-quick-stats \
+    sbin    iwata/git-now \
+    make"PREFIX=$ZPFX install" \
+            tj/git-extras \
+    sbin"git-url;git-guclone" make"GITURL_NO_CGITURL=1" \
+            zdharma-continuum/git-url
 
 # OMZ framework
 zinit snippet OMZ::lib/key-bindings.zsh
@@ -91,8 +102,8 @@ zinit snippet 'https://github.com/robbyrussell/oh-my-zsh/blob/master/plugins/fd/
 zinit ice lucid wait"0" atclone"sed -ie 's/fc -rl 1/fc -rli 1/' shell/key-bindings.zsh" \
       atpull"%atclone" multisrc"shell/{completion,key-bindings}.zsh" id-as"junegunn/fzf_completions" \
         pick"/dev/null"
-zinit light junegunn/fzf
-
+# zinit light junegunn/fzf
+zinit light Aloxaf/fzf-tab
 FZF_DEFAULT_COMMAND='fd --type f'
 DISABLE_LS_COLORS=true
 
@@ -114,6 +125,8 @@ setopt autopushd pushdminus pushdsilent pushdtohome
 # zsh exa
 zinit ice from"gh-r" as"program" pick"bin/exa"
 zinit light ogham/exa
+zinit ice lucid wait"0a" as"completion" 
+zinit snippet "https://github.com/ogham/exa/blob/master/completions/zsh/_exa"
 
 # n-install for node
 if [[ -d $HOME/.n ]]; then
@@ -124,6 +137,8 @@ fi
 if (($+commands[exa])) ;then
   alias ls="exa --icons"
   alias ll="exa -l --icons --git"
+  alias l="exa --icons"
+  alias sl="exa --icons"
 fi
 alias jj="jobs"
 alias cgrep='rg -g "*.c" -g "*.h" -g "*.cpp" -g "*.cc"'
@@ -133,6 +148,12 @@ if (($+commands[nvim])) ;then
 fi
 if (($+commands[byobu])) ;then
   alias bb="byobu"
+fi
+if (($+commands[mcfly])) ;then
+  eval "$(mcfly init zsh)"
+  export MCFLY_KEY_SCHEME=vim
+  export MCFLY_FUZZY=2
+  bindkey '^R' mcfly-history-widget   # Ctrl+Alt+R binds to mcfly
 fi
 
 POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD=true
