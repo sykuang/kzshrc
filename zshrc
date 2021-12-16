@@ -98,6 +98,7 @@ zinit as="null" wait="1" lucid from="gh-r" for \
 # fd settings
 zinit ice as="completion"
 zinit snippet 'https://github.com/robbyrussell/oh-my-zsh/blob/master/plugins/fd/_fd'
+
 # fzf setting
 zinit ice lucid wait"0" atclone"sed -ie 's/fc -rl 1/fc -rli 1/' shell/key-bindings.zsh" \
       atpull"%atclone" multisrc"shell/{completion,key-bindings}.zsh" id-as"junegunn/fzf_completions" \
@@ -110,6 +111,12 @@ DISABLE_LS_COLORS=true
 
 # fzf-tab
 zinit light Aloxaf/fzf-tab
+
+# mcfly settings
+zinit ice lucid wait"0a" from"gh-r" as"program" atload'eval "$(mcfly init zsh)"' 
+zinit light cantino/mcfly 
+MCFLY_KEY_SCHEME=vim
+MCFLY_FUZZY=2
 
 # git-cmd
 zinit load sykuang/zsh-git-cmd
@@ -148,12 +155,6 @@ if (($+commands[nvim])) ;then
 fi
 if (($+commands[byobu])) ;then
   alias bb="byobu"
-fi
-if (($+commands[mcfly])) ;then
-  eval "$(mcfly init zsh)"
-  export MCFLY_KEY_SCHEME=vim
-  export MCFLY_FUZZY=2
-  bindkey '^R' mcfly-history-widget   # Ctrl+Alt+R binds to mcfly
 fi
 
 POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD=true
