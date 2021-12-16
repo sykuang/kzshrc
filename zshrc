@@ -7,35 +7,31 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
+ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
 ### Added by Zinit's installer
-if [[ ! -f $HOME/.zinit/bin/zinit.zsh ]]; then
+if [[ ! -d "$(dirname $ZINIT_HOME)" ]]; then
     print -P "%F{33}▓▒░ %F{220}Installing DHARMA Initiative Plugin Manager (zdharma/zinit)…%f"
-    command mkdir -p "$HOME/.zinit" && command chmod g-rwX "$HOME/.zinit"
-    command git clone https://github.com/zdharma/zinit "$HOME/.zinit/bin" && \
+    command mkdir -p "$(dirname $ZINIT_HOME)"
+    command git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME" && \
         print -P "%F{33}▓▒░ %F{34}Installation successful.%f%b" || \
         print -P "%F{160}▓▒░ The clone has failed.%f%b"
 fi
 
-source "$HOME/.zinit/bin/zinit.zsh"
-# if ((!$+commands[starship])) ;then
-# curl -fsSL https://starship.rs/install.sh | bash
-# fi
+source "$HOME/.local/share/zinit/zinit.git/zinit.zsh"
+
 autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
 
 # Load a few important annexes, without Turbo
 # (this is currently required for annexes)
-zinit light-mode for \
-    zinit-zsh/z-a-patch-dl \
-    zinit-zsh/z-a-as-monitor \
-    zinit-zsh/z-a-bin-gem-node
+zinit for \
+    light-mode zdharma-continuum/zinit-annex-patch-dl \
+    light-mode zdharma-continuum/z-a-bin-gem-node
+#     zinit-zsh/z-a-as-monitor \
 
 ### End of Zinit's installer chunk
 
 # Theme
-# zinit ice pick"async.zsh" src"pure.zsh"
-# zinit light sindresorhus/pure
-# eval "$(starship init zsh)"
 zinit ice depth=1; zinit light romkatv/powerlevel10k
 # Autoenv
 zinit ice depth=1;zinit ice lucid wait src"autoenv.zsh"
@@ -62,8 +58,8 @@ zinit light zsh-users/zsh-autosuggestions
 zinit light chrissicool/zsh-256color
 
 # git diff so fancy
-zinit ice wait="2" lucid as"program" pick"bin/git-dsf"
-zinit light zdharma/zsh-diff-so-fancy
+zinit ice lucid wait="2" lucid as"program" pick"bin/git-dsf"
+zinit light zdharma-continuum/zsh-diff-so-fancy
 
 # Extending Git
 zinit as"null" wait"1" lucid for \
@@ -89,7 +85,6 @@ zinit snippet OMZ::plugins/colored-man-pages/colored-man-pages.plugin.zsh
 zinit snippet OMZ::plugins/sudo/sudo.plugin.zsh
 
 # commands
-zinit light zinit-zsh/z-a-bin-gem-node
 zinit as="null" wait="1" lucid from="gh-r" for \
     mv="*/rg -> rg"  sbin		BurntSushi/ripgrep \
     mv="fd* -> fd"   sbin="fd/fd"  @sharkdp/fd \
@@ -103,7 +98,7 @@ zinit snippet 'https://github.com/robbyrussell/oh-my-zsh/blob/master/plugins/fd/
 zinit ice lucid wait"0" atclone"sed -ie 's/fc -rl 1/fc -rli 1/' shell/key-bindings.zsh" \
       atpull"%atclone" multisrc"shell/{completion,key-bindings}.zsh" id-as"junegunn/fzf_completions" \
         pick"/dev/null"
-# zinit light junegunn/fzf
+zinit light junegunn/fzf
 zinit light Aloxaf/fzf-tab
 FZF_DEFAULT_COMMAND='fd --type f'
 DISABLE_LS_COLORS=true
@@ -136,17 +131,16 @@ zinit ice lucid wait"0a" as"completion"
 zinit snippet "https://github.com/ogham/exa/blob/master/completions/zsh/_exa"
 
 # n-install for node
-if [[ -d $HOME/.n ]]; then
-    path+=("$HOME/.n/bin")
-fi
+zinit ice lucid as"program" atclone"export N_PREFIX=$HOME/.n;bash n lts"
+zinit snippet "https://github.com/tj/n/blob/master/bin/n"
+N_PREFIX=$HOME/.n
+path+=("$N_PREFIX/bin")
 
 # Alias
-if (($+commands[exa])) ;then
-  alias ls="exa --icons"
-  alias ll="exa -l --icons --git"
-  alias l="exa --icons"
-  alias sl="exa --icons"
-fi
+alias ls="exa --icons"
+alias ll="exa -l --icons --git"
+alias l="exa --icons"
+alias sl="exa --icons"
 alias jj="jobs"
 alias cgrep='rg -g "*.c" -g "*.h" -g "*.cpp" -g "*.cc"'
 alias mgrep='rg -g "*.mk" -g "Makefile" -g "makefile"'
