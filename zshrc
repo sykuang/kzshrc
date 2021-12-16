@@ -189,3 +189,11 @@ fi
 
 # local bin
 [[ ! -d $HOME/.local/bin ]] || path+=("$HOME/.local/bin")
+
+# GO
+GOPATH=$HOME/.go
+GO111MODULE=on
+path+=("$GOPATH/bin")
+
+# Rust
+path+=("$HOME/.cargo/bin")
