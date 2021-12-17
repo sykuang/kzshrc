@@ -66,9 +66,7 @@ zinit as"null" wait"1" lucid for \
             arzzen/git-quick-stats \
     sbin    iwata/git-now \
     make"PREFIX=$ZPFX install" \
-            tj/git-extras \
-    sbin"git-url;git-guclone" make"GITURL_NO_CGITURL=1" \
-            zdharma-continuum/git-url
+            tj/git-extras
 
 # OMZ framework
 zinit wait lucid for \
@@ -91,7 +89,7 @@ zinit wait lucid for \
   OMZP::sudo
 
 # commands
-zinit as="null" wait="1" lucid from="gh-r" for \
+zinit as="null" lucid from="gh-r" for \
     mv="*/rg -> rg"  sbin		BurntSushi/ripgrep \
     mv="fd* -> fd"   sbin="fd/fd"  @sharkdp/fd \
     sbin="fzf"       junegunn/fzf
@@ -112,7 +110,7 @@ zinit ice lucid wait
 zinit light Aloxaf/fzf-tab
 
 # mcfly settings
-zinit ice lucid wait"1a" from"gh-r" as"program" atload'eval "$(mcfly init zsh)";MCFLY_KEY_SCHEME=vim;MCFLY_FUZZY=2;MCFLY_LIGHT=TRUE' 
+zinit ice lucid wait"1a" from"gh-r" as"program" atload'eval "$(mcfly init zsh)";export MCFLY_KEY_SCHEME=vim;export MCFLY_FUZZY=2;' 
 zinit light cantino/mcfly 
 
 # git-cmd
@@ -124,7 +122,7 @@ zinit light sei40kr/fast-alias-tips-bin
 zinit light sei40kr/zsh-fast-alias-tips
 
 # zsh exa
-zinit ice from"gh-r" as"program" pick"bin/exa" atload"alias ls='exa --icons';alias ll='exa -l --icons --git'" wait"2" lucid
+zinit ice from"gh-r" as"program" pick"bin/exa" atload"alias ls='exa --icons';alias ll='exa -l --icons --git'" lucid
 zinit light ogham/exa
 zinit ice lucid wait"2" as"completion" 
 zinit snippet "https://github.com/ogham/exa/blob/master/completions/zsh/_exa"
