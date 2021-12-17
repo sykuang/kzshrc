@@ -1,12 +1,5 @@
 #!/bin/zsh
 
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
-
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
 ### Added by Zinit's installer
 if [[ ! -d "$(dirname $ZINIT_HOME)" ]]; then
@@ -32,6 +25,8 @@ zinit for \
 
 # Theme
 zinit ice depth=1; zinit light romkatv/powerlevel10k
+zinit ice lucid depth=1 src"p10k.zsh"
+zinit light sykuang/p10k_theme 
 # Autoenv
 zinit ice depth=1;zinit ice lucid wait src"autoenv.zsh"
 zinit light Tarrasch/zsh-autoenv
@@ -48,9 +43,6 @@ zinit wait lucid for \
     zsh-users/zsh-completions \
  atload"!_zsh_autosuggest_start" \
     zsh-users/zsh-autosuggestions
-
-# zsh color
-zinit light chrissicool/zsh-256color
 
 # git diff so fancy
 zinit ice lucid wait="2" lucid as"program" pick"bin/git-dsf"
@@ -138,7 +130,7 @@ alias nn='nnn -e'
 export EDITOR=nvim
 " for jarun/nnn
 
-#shfmt
+# shfmt
 zinit ice from"gh-r" as"program" mv"shfmt* -> shfmt"
 zinit light mvdan/sh
 
@@ -158,9 +150,6 @@ fi
 
 POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD=true
 
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
 # Customize function
 function vrg(){
     if [[ -z $1 ]];then
@@ -173,9 +162,6 @@ function vrg(){
     fi
     rg --vimgrep --color=always $@ |fzf  --ansi --disabled --bind "enter:execute(nvim {})"
 }
-
-# customize zsh
-[[ ! -f ~/.zshenv ]] || source ~/.zshenv
 
 # Iterm 2 shell integration
 
