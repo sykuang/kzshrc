@@ -27,7 +27,6 @@ autoload -Uz _zinit
 zinit for \
     light-mode zdharma-continuum/zinit-annex-patch-dl \
     light-mode zdharma-continuum/z-a-bin-gem-node
-#     zinit-zsh/z-a-as-monitor \
 
 ### End of Zinit's installer chunk
 
@@ -49,10 +48,6 @@ zinit wait lucid for \
     zsh-users/zsh-completions \
  atload"!_zsh_autosuggest_start" \
     zsh-users/zsh-autosuggestions
-
-# Auto sugggestions
-zinit ice lucid wait="0" atload='_zsh_autosuggest_start'
-zinit light zsh-users/zsh-autosuggestions
 
 # zsh color
 zinit light chrissicool/zsh-256color
@@ -76,13 +71,24 @@ zinit as"null" wait"1" lucid for \
             zdharma-continuum/git-url
 
 # OMZ framework
-zinit snippet OMZ::lib/key-bindings.zsh
-zinit snippet OMZ::lib/completion.zsh
-zinit snippet OMZ::lib/history.zsh
-#zinit ice svn
-zinit snippet OMZ::plugins/extract
-zinit snippet OMZ::plugins/colored-man-pages/colored-man-pages.plugin.zsh
-zinit snippet OMZ::plugins/sudo/sudo.plugin.zsh
+zinit wait lucid for \
+  OMZL::key-bindings.zsh \
+  OMZL::completion.zsh \
+  OMZL::termsupport.zsh \
+  atload'
+  test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+  ' \
+  OMZL::correction.zsh \
+  atload'
+  alias ..="cd .."
+  alias ...="cd ../.."
+  alias ....="cd ../../.."
+  alias .....="cd ../../../.."
+  ENABLE_CORRECTION=true
+  ' \
+  OMZP::extract \
+  OMZP::colored-man-pages \
+  OMZP::sudo
 
 # commands
 zinit as="null" wait="1" lucid from="gh-r" for \
@@ -97,21 +103,17 @@ zinit snippet 'https://github.com/robbyrussell/oh-my-zsh/blob/master/plugins/fd/
 # fzf setting
 zinit ice lucid wait"0" atclone"sed -ie 's/fc -rl 1/fc -rli 1/' shell/key-bindings.zsh" \
       atpull"%atclone" multisrc"shell/{completion,key-bindings}.zsh" id-as"junegunn/fzf_completions" \
-        pick"/dev/null"
+        pick"/dev/null" \
+        atload"FZF_DEFAULT_COMMAND='fd --type f';DISABLE_LS_COLORS=true"
 zinit light junegunn/fzf
-zinit light Aloxaf/fzf-tab
-FZF_DEFAULT_COMMAND='fd --type f'
-DISABLE_LS_COLORS=true
-
 
 # fzf-tab
+zinit ice lucid wait
 zinit light Aloxaf/fzf-tab
 
 # mcfly settings
-zinit ice lucid wait"0a" from"gh-r" as"program" atload'eval "$(mcfly init zsh)"' 
+zinit ice lucid wait"1a" from"gh-r" as"program" atload'eval "$(mcfly init zsh)";MCFLY_KEY_SCHEME=vim;MCFLY_FUZZY=2;MCFLY_LIGHT=TRUE' 
 zinit light cantino/mcfly 
-MCFLY_KEY_SCHEME=vim
-MCFLY_FUZZY=2
 
 # git-cmd
 zinit load sykuang/zsh-git-cmd
@@ -121,26 +123,31 @@ zinit ice from'gh-r' as'program'
 zinit light sei40kr/fast-alias-tips-bin
 zinit light sei40kr/zsh-fast-alias-tips
 
-# Auto pushd
-setopt autopushd pushdminus pushdsilent pushdtohome
-
 # zsh exa
-zinit ice from"gh-r" as"program" pick"bin/exa"
+zinit ice from"gh-r" as"program" pick"bin/exa" atload"alias ls='exa --icons';alias ll='exa -l --icons --git'" wait"2" lucid
 zinit light ogham/exa
-zinit ice lucid wait"0a" as"completion" 
+zinit ice lucid wait"2" as"completion" 
 zinit snippet "https://github.com/ogham/exa/blob/master/completions/zsh/_exa"
 
 # n-install for node
-zinit ice lucid as"program" atclone"export N_PREFIX=$HOME/.n;bash n lts"
+zinit ice lucid as"program" atclone"export N_PREFIX=$HOME/.n;bash n lts" atload"export N_PREFIX=$HOME/.n;path+=($HOME/.n/bin)"
 zinit snippet "https://github.com/tj/n/blob/master/bin/n"
-N_PREFIX=$HOME/.n
-path+=("$N_PREFIX/bin")
+
+# jarun/nnn, a file browser, using the for-syntax
+zinit pick"misc/quitcd/quitcd.zsh" sbin make light-mode \
+atload"
+alias nn='nnn -e'
+export EDITOR=nvim
+" for jarun/nnn
+
+#shfmt
+zinit ice from"gh-r" as"program" mv"shfmt* -> shfmt"
+zinit light mvdan/sh
+
+# Auto pushd
+setopt autopushd pushdminus pushdsilent pushdtohome
 
 # Alias
-alias ls="exa --icons"
-alias ll="exa -l --icons --git"
-alias l="exa --icons"
-alias sl="exa --icons"
 alias jj="jobs"
 alias cgrep='rg -g "*.c" -g "*.h" -g "*.cpp" -g "*.cc"'
 alias mgrep='rg -g "*.mk" -g "Makefile" -g "makefile"'
@@ -173,7 +180,6 @@ function vrg(){
 [[ ! -f ~/.zshenv ]] || source ~/.zshenv
 
 # Iterm 2 shell integration
-test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
 # pyenv
 if command -v pyenv 1>/dev/null 2>&1; then
