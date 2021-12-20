@@ -128,7 +128,6 @@ zinit snippet "https://github.com/tj/n/blob/master/bin/n"
 zinit ice lucid atclone"make CMAKE_BUILD_TYPE=Rel" make"PREFIX=$ZPFX install" atload"alias vim=nvim" depth=1 as"program"
 zinit light neovim/neovim
 
-
 # jarun/nnn, a file browser, using the for-syntax
 zinit pick"misc/quitcd/quitcd.zsh" sbin make light-mode \
   atload"
@@ -147,11 +146,15 @@ zinit id-as"rust" wait=1 as=null sbin="bin/*" lucid rustup \
   export CARGO_HOME=\$PWD; export RUSTUP_HOME=\$PWD/rustup" for \
   zdharma-continuum/null
 
-#pyenv
+# pyenv
 zinit lucid as'command' pick'bin/pyenv' atinit'export PYENV_ROOT="$PWD"' \
   atclone'PYENV_ROOT="$PWD" ./libexec/pyenv init - > zpyenv.zsh' \
   atpull"%atclone" src"zpyenv.zsh" nocompile'!' atload'eval "$(pyenv init --path)"' for \
   pyenv/pyenv
+
+# kcmds
+zinit ice lucid 
+zinit light sykuang/kcmd
 
 # Auto pushd
 zinit ice id-as"autopushd" as=null atload="setopt autopushd pushdminus pushdsilent pushdtohome"
@@ -166,14 +169,6 @@ zinit ice id-as"alias" as=null \
   alias bb="byobu"
   ' 
 zinit load zdharma-continuum/null
-
-# Customize function
-function vrg(){
-    if [[ -z $1 ]];then
-        return
-    fi
-    rg --vimgrep --color=always $@ |fzf  --ansi --disabled --bind "enter:execute(nvim {})"
-}
 
 zinit ice id-as"alias" as=null \
   atload'
