@@ -19,13 +19,14 @@ autoload -Uz _zinit
 # (this is currently required for annexes)
 zinit for \
     light-mode zdharma-continuum/zinit-annex-patch-dl \
-    light-mode zdharma-continuum/z-a-bin-gem-node
+    light-mode zdharma-continuum/z-a-bin-gem-node \
+    light-mode zdharma-continuum/z-a-rust
 
 ### End of Zinit's installer chunk
 
 # Theme
 zinit ice depth=1; zinit light romkatv/powerlevel10k
-zinit ice lucid depth=1 src"p10k.zsh"
+zinit ice lucid depth=1 src"p10k.zsh" atload"POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD=true"
 zinit light sykuang/p10k_theme 
 # Autoenv
 zinit ice depth=1;zinit ice lucid wait src"autoenv.zsh"
@@ -123,62 +124,60 @@ zinit snippet "https://github.com/ogham/exa/blob/master/completions/zsh/_exa"
 zinit ice lucid as"program" atclone"export N_PREFIX=$HOME/.n;bash n lts" atload"export N_PREFIX=$HOME/.n;path+=($HOME/.n/bin)"
 zinit snippet "https://github.com/tj/n/blob/master/bin/n"
 
+# nvim
+zinit ice lucid atclone"make CMAKE_BUILD_TYPE=Rel" make"PREFIX=$ZPFX install" atload"alias vim=nvim" depth=1 as"program"
+zinit light neovim/neovim
+
+
 # jarun/nnn, a file browser, using the for-syntax
 zinit pick"misc/quitcd/quitcd.zsh" sbin make light-mode \
-atload"
-alias nn='nnn -e'
-export EDITOR=nvim
-" for jarun/nnn
+  atload"
+  alias nn='nnn -e'
+  export EDITOR=nvim
+  " for jarun/nnn
 
 # shfmt
 zinit ice from"gh-r" as"program" mv"shfmt* -> shfmt"
 zinit light mvdan/sh
 
+# cargo
+# Installation of Rust compiler environment via the z-a-rust annex
+zinit id-as"rust" wait=1 as=null sbin="bin/*" lucid rustup \
+  atload="[[ ! -f ${ZINIT[COMPLETIONS_DIR]}/_cargo ]] && zi creinstall -q rust; \
+  export CARGO_HOME=\$PWD; export RUSTUP_HOME=\$PWD/rustup" for \
+  zdharma-continuum/null
+
+#pyenv
+zinit lucid as'command' pick'bin/pyenv' atinit'export PYENV_ROOT="$PWD"' \
+  atclone'PYENV_ROOT="$PWD" ./libexec/pyenv init - > zpyenv.zsh' \
+  atpull"%atclone" src"zpyenv.zsh" nocompile'!' atload'eval "$(pyenv init --path)"' for \
+  pyenv/pyenv
+
 # Auto pushd
-setopt autopushd pushdminus pushdsilent pushdtohome
+zinit ice id-as"autopushd" as=null atload="setopt autopushd pushdminus pushdsilent pushdtohome"
+zinit load zdharma-continuum/null
 
 # Alias
-alias jj="jobs"
-alias cgrep='rg -g "*.c" -g "*.h" -g "*.cpp" -g "*.cc"'
-alias mgrep='rg -g "*.mk" -g "Makefile" -g "makefile"'
-if (($+commands[nvim])) ;then
-  alias vim=nvim
-fi
-if (($+commands[byobu])) ;then
+zinit ice id-as"alias" as=null \
+  atload'
+  alias jj="jobs"
+  alias cgrep="rg -g \*.c -g \*.h -g \*.cpp -g \*.cc"
+  alias mgrep="rg -g \*.mk -g Makefile -g makefile"
   alias bb="byobu"
-fi
-
-POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD=true
+  ' 
+zinit load zdharma-continuum/null
 
 # Customize function
 function vrg(){
     if [[ -z $1 ]];then
         return
     fi
-    if (($+commands[nvim])) ;then
-        editor=nvim
-    else
-        editor=vim
-    fi
     rg --vimgrep --color=always $@ |fzf  --ansi --disabled --bind "enter:execute(nvim {})"
 }
 
-# Iterm 2 shell integration
-
-# pyenv
-if command -v pyenv 1>/dev/null 2>&1; then
-    PYENV_ROOT="$HOME/.pyenv"
-    path=("$PYENV_ROOT/shims" $path)
-    eval "$(pyenv init -)"
-fi
-
-# local bin
-[[ ! -d $HOME/.local/bin ]] || path+=("$HOME/.local/bin")
-
-# GO
-GOPATH=$HOME/.go
-GO111MODULE=on
-path+=("$GOPATH/bin")
-
-# Rust
-path+=("$HOME/.cargo/bin")
+zinit ice id-as"alias" as=null \
+  atload'
+  [[ ! -d $HOME/.local/bin ]] || path=("$HOME/.local/bin" $path)
+  [[ ! -f $HOME/.zshenv ]] || source $HOME/.zshenv
+  ' 
+zinit load zdharma-continuum/null
