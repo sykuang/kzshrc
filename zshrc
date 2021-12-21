@@ -125,7 +125,7 @@ zinit ice lucid as"program" atclone"export N_PREFIX=$HOME/.n;bash n lts" atload"
 zinit snippet "https://github.com/tj/n/blob/master/bin/n"
 
 # nvim
-zinit ice lucid atclone"make CMAKE_BUILD_TYPE=Rel" make"PREFIX=$ZPFX install" atload"alias vim=nvim" depth=1 as"program"
+zinit ice lucid atclone"make CMAKE_BUILD_TYPE=Rel CMAKE_INSTALL_PREFIX=$ZPFX" make"PREFIX=$ZPFX install" atload"alias vim=nvim" depth=1 as"program"
 zinit light neovim/neovim
 
 # jarun/nnn, a file browser, using the for-syntax
