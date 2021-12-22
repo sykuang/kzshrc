@@ -143,7 +143,7 @@ zinit light mvdan/sh
 # Installation of Rust compiler environment via the z-a-rust annex
 zinit id-as"rust" wait=1 as=null sbin="bin/*" lucid rustup \
   atload="[[ ! -f ${ZINIT[COMPLETIONS_DIR]}/_cargo ]] && zi creinstall -q rust; \
-  export CARGO_HOME=\$PWD; export RUSTUP_HOME=\$PWD/rustup" for \
+  export CARGO_HOME=\$PWD; export RUSTUP_HOME=\$PWD/rustup;path+=(\$CARGO_HOME/bin)" for \
   zdharma-continuum/null
 
 # pyenv
