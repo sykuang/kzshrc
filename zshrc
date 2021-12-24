@@ -160,7 +160,7 @@ zinit ice lucid
 zinit light sykuang/kcmd
 
 # bpytop
-zinit ice pip"bpytop <- !bpytop -> top" as=null
+zinit ice node"jsonlint <-!jsonlint -> jsonlint" pip"bpytop <- !bpytop -> top" as=null
 zinit load zdharma-continuum/null
 
 # Auto pushd
