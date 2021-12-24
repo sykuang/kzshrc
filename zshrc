@@ -95,7 +95,10 @@ zinit snippet 'https://github.com/robbyrussell/oh-my-zsh/blob/master/plugins/fd/
 zinit ice lucid wait"0" atclone"sed -ie 's/fc -rl 1/fc -rli 1/' shell/key-bindings.zsh" \
       atpull"%atclone" multisrc"shell/{completion,key-bindings}.zsh" id-as"junegunn/fzf_completions" \
         pick"/dev/null" \
-        atload"FZF_DEFAULT_COMMAND='fd --type f';DISABLE_LS_COLORS=true"
+        atload"FZF_DEFAULT_COMMAND='fd --type f'
+        DISABLE_LS_COLORS=true
+        FZF_CTRL_T_OPTS='--reverse --extended --tabstop=2 --cycle --no-mouse --preview \"pygmentize {}\" --color light --margin 1'
+        "
 zinit light junegunn/fzf
 
 # fzf-tab
@@ -121,7 +124,7 @@ zinit ice lucid wait"2" as"completion"
 zinit snippet "https://github.com/ogham/exa/blob/master/completions/zsh/_exa"
 
 # n-install for node
-zinit ice lucid as"program" atclone"export N_PREFIX=$HOME/.n;bash n lts" atload"export N_PREFIX=$HOME/.n;path+=($HOME/.n/bin)"
+zinit ice lucid as"program" atclone"export N_PREFIX=$HOME/.n;bash n lts" atload"export N_PREFIX=$HOME/.n;path+=(\$N_PREFIX/bin)"
 zinit snippet "https://github.com/tj/n/blob/master/bin/n"
 
 # nvim
@@ -129,14 +132,14 @@ zinit ice lucid atclone"make CMAKE_BUILD_TYPE=Rel CMAKE_INSTALL_PREFIX=$ZPFX" ma
 zinit light neovim/neovim
 
 # jarun/nnn, a file browser, using the for-syntax
-zinit pick"misc/quitcd/quitcd.zsh" sbin make light-mode \
+zinit pick"misc/quitcd/quitcd.zsh" fbin"nnn" make light-mode \
   atload"
   alias nn='nnn -e'
   export EDITOR=nvim
   " for jarun/nnn
 
 # shfmt
-zinit ice from"gh-r" as"program" mv"shfmt* -> shfmt"
+zinit ice from"gh-r" as"program" mv"shfmt* -> shfmt" fbin"shfmt"
 zinit light mvdan/sh
 
 # cargo
@@ -148,13 +151,17 @@ zinit id-as"rust" wait=1 as=null sbin="bin/*" lucid rustup \
 
 # pyenv
 zinit lucid as'command' pick'bin/pyenv' atinit'export PYENV_ROOT="$PWD"' \
-  atclone'PYENV_ROOT="$PWD" ./libexec/pyenv init - > zpyenv.zsh' \
+  atclone'PYENV_ROOT="$PWD" ./libexec/pyenv init - > zpyenv.zsh;PYENV_ROOT="$PWD" ./libexec/pyenv install 3.10.1;PYENV_ROOT="$PWD" ./libexec/pyenv global 3.10.1' \
   atpull"%atclone" src"zpyenv.zsh" nocompile'!' atload'eval "$(pyenv init --path)"' for \
   pyenv/pyenv
 
 # kcmds
 zinit ice lucid 
 zinit light sykuang/kcmd
+
+# bpytop
+zinit ice pip"bpytop <- !bpytop -> top" as=null
+zinit load zdharma-continuum/null
 
 # Auto pushd
 zinit ice id-as"autopushd" as=null atload="setopt autopushd pushdminus pushdsilent pushdtohome"
