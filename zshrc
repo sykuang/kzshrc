@@ -98,7 +98,7 @@ zinit ice lucid wait"0" atclone"sed -ie 's/fc -rl 1/fc -rli 1/' shell/key-bindin
         pick"/dev/null" \
         atload"FZF_DEFAULT_COMMAND='fd --type f'
         DISABLE_LS_COLORS=true
-        FZF_CTRL_T_OPTS='--reverse --extended --tabstop=2 --cycle --no-mouse --preview \"pygmentize {}\" --color light --margin 1'
+        FZF_CTRL_T_OPTS='--reverse --extended --tabstop=2 --cycle --no-mouse --preview \"[[ ! -d {} ]] && pygmentize {}\" --color light --margin 1'
         "
 zinit light junegunn/fzf
 
