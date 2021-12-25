@@ -77,6 +77,7 @@ zinit wait lucid for \
   alias .....="cd ../../../.."
   ENABLE_CORRECTION=true
   ' \
+  OMZL::history.zsh \
   OMZP::extract \
   OMZP::colored-man-pages \
   OMZP::sudo
@@ -106,8 +107,8 @@ zinit ice lucid wait
 zinit light Aloxaf/fzf-tab
 
 # mcfly settings
-zinit ice lucid wait"1a" from"gh-r" as"program" atload'eval "$(mcfly init zsh)";export MCFLY_KEY_SCHEME=vim;export MCFLY_FUZZY=2;' 
-zinit light cantino/mcfly 
+zinit ice lucid wait"1a" from"gh-r" as"program" atload'eval "$(mcfly init zsh)";export MCFLY_KEY_SCHEME=vim;export MCFLY_FUZZY=2;'
+zinit light cantino/mcfly
 
 # git-cmd
 zinit load sykuang/zsh-git-cmd
@@ -159,9 +160,25 @@ zinit lucid as'command' pick'bin/pyenv' atinit'export PYENV_ROOT="$PWD"' \
 zinit ice lucid 
 zinit light sykuang/kcmd
 
-# bpytop
-zinit ice node"jsonlint <-!jsonlint -> jsonlint" pip"bpytop <- !bpytop -> top" as=null
+# stylua
+zinit ice rustup cargo"!stylua -> stylua" id-as"stylua"
 zinit load zdharma-continuum/null
+
+# jsonlint
+zinit ice node"jsonlint <-!jsonlint -> jsonlint" id-as"jsonlint" 
+zinit load zdharma-continuum/null
+
+# bpytop
+zinit ice pip"bpytop <- !bpytop -> top" id-as"bpytop"
+zinit load zdharma-continuum/null
+
+# Pygments
+zinit ice pip"Pygments" id-as"Pygments" as"command" pick"venv/bin/pygmentize"
+zinit load zdharma-continuum/null
+
+# shellcheck
+zinit ice lucid from="gh-r" as"program" sbin"shellcheck" mv"*/shellcheck -> shellcheck"
+zinit load koalaman/shellcheck
 
 # Auto pushd
 zinit ice id-as"autopushd" as=null atload="setopt autopushd pushdminus pushdsilent pushdtohome"
@@ -177,7 +194,7 @@ zinit ice id-as"alias" as=null \
   ' 
 zinit load zdharma-continuum/null
 
-zinit ice id-as"alias" as=null \
+zinit ice id-as"Path" as=null \
   atload'
   [[ ! -d $HOME/.local/bin ]] || path=("$HOME/.local/bin" $path)
   [[ ! -f $HOME/.zshenv ]] || source $HOME/.zshenv
