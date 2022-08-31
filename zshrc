@@ -45,9 +45,10 @@ zinit wait lucid for \
  atload"!_zsh_autosuggest_start" \
     zsh-users/zsh-autosuggestions
 
-# git diff so fancy
-zinit ice lucid wait="2" lucid as"program" pick"bin/git-dsf"
-zinit light zdharma-continuum/zsh-diff-so-fancy
+# git-delta
+zinit ice from"gh-r" id-as"git-delta" as"program" pick"*/delta" lucid
+zinit light dandavison/delta
+
 
 # Extending Git
 zinit as"null" wait"1" lucid for \
@@ -96,8 +97,9 @@ zinit snippet 'https://github.com/robbyrussell/oh-my-zsh/blob/master/plugins/fd/
 zinit ice lucid wait"0" atclone"sed -ie 's/fc -rl 1/fc -rli 1/' shell/key-bindings.zsh" \
       atpull"%atclone" multisrc"shell/{completion,key-bindings}.zsh" id-as"junegunn/fzf_completions" \
         pick"/dev/null" \
-        atload"FZF_DEFAULT_COMMAND='fd --type f'
+        atload"export FZF_DEFAULT_COMMAND='fd --type f'
         DISABLE_LS_COLORS=true
+        export FZF_CTRL_T_COMMAND='fd --type f'
         FZF_CTRL_T_OPTS='--reverse --extended --tabstop=2 --cycle --no-mouse --preview \"[[ ! -d {} ]] && pygmentize {}\" --color light --margin 1'
         "
 zinit light junegunn/fzf
@@ -107,7 +109,7 @@ zinit ice lucid wait
 zinit light Aloxaf/fzf-tab
 
 # mcfly settings
-zinit ice lucid wait"1a" from"gh-r" as"program" atload'eval "$(mcfly init zsh)";export MCFLY_KEY_SCHEME=vim;export MCFLY_FUZZY=2;'
+zinit ice lucid wait"1a" from"gh-r" as"program" atload'eval "$(mcfly init zsh)";export MCFLY_KEY_SCHEME=vim;export MCFLY_FUZZY=2;export MCFLY_INTERFACE_VIEW=BOTTOM;'
 zinit light cantino/mcfly
 
 # git-cmd
@@ -125,11 +127,11 @@ zinit ice lucid wait"2" as"completion"
 zinit snippet "https://github.com/ogham/exa/blob/master/completions/zsh/_exa"
 
 # n-install for node
-zinit ice lucid as"program" atclone"export N_PREFIX=$HOME/.n;bash n lts" atload"export N_PREFIX=$HOME/.n;path+=(\$N_PREFIX/bin)"
+zinit ice lucid as"program" atclone"export N_PREFIX=$HOME/.n;bash n lts" atload"export N_PREFIX=$HOME/.n;path=("\$N_PREFIX/bin" \$path)"
 zinit snippet "https://github.com/tj/n/blob/master/bin/n"
 
 # nvim
-zinit ice lucid atclone"make CMAKE_BUILD_TYPE=Rel CMAKE_INSTALL_PREFIX=$ZPFX" make"PREFIX=$ZPFX install" atload"alias vim=nvim;alias vimdiff='nvim -d'" depth=1 as"program"
+zinit ice lucid ver"release-0.7" atclone"make CMAKE_BUILD_TYPE=Rel CMAKE_INSTALL_PREFIX=$ZPFX" make"PREFIX=$ZPFX install" atload"alias vim=nvim;alias vimdiff='nvim -d'" as"program"
 zinit light neovim/neovim
 
 # jarun/nnn, a file browser, using the for-syntax
@@ -152,7 +154,7 @@ zinit id-as"rust" wait=1 as=null sbin="bin/*" lucid rustup \
 
 # pyenv
 zinit lucid as'command' pick'bin/pyenv' atinit'export PYENV_ROOT="$PWD"' \
-  atclone'PYENV_ROOT="$PWD" ./libexec/pyenv init - > zpyenv.zsh;PYENV_ROOT="$PWD" ./libexec/pyenv install 3.10.1;PYENV_ROOT="$PWD" ./libexec/pyenv global 3.10.1' \
+  atclone'PYENV_ROOT="$PWD" ./libexec/pyenv init - > zpyenv.zsh;PYENV_ROOT="$PWD" ./libexec/pyenv install 3.10.1;PYENV_ROOT="$PWD" ./libexec/pyenv global 3.10.1;git clone https://github.com/s1341/pyenv-alias.git plugins/pyenv-alias' \
   atpull"%atclone" src"zpyenv.zsh" nocompile'!' atload'eval "$(pyenv init --path)"' for \
   pyenv/pyenv
 
@@ -169,16 +171,29 @@ zinit ice node"jsonlint <-!jsonlint -> jsonlint" id-as"jsonlint"
 zinit load zdharma-continuum/null
 
 # bpytop
-zinit ice pip"bpytop <- !bpytop -> top" id-as"bpytop"
+zinit ice pip"bpytop <- !bpytop -> top" id-as"bpytop" as"program" sbin"venv/bin/bpytop" atload"alias top=bpytop" 
 zinit load zdharma-continuum/null
 
 # Pygments
-zinit ice pip"Pygments" id-as"Pygments" as"command" pick"venv/bin/pygmentize"
+zinit ice pip"Pygments" id-as"Pygments" as"program" sbin"venv/bin/pygmentize" atload"alias ccat=pygmentize"
 zinit load zdharma-continuum/null
 
 # shellcheck
 zinit ice lucid from="gh-r" as"program" sbin"shellcheck" mv"*/shellcheck -> shellcheck"
 zinit load koalaman/shellcheck
+
+# black
+zinit ice pip"black" id-as"black" as"program" sbin"venv/bin/black"
+zinit load zdharma-continuum/null
+
+# neovim-remote
+zinit ice pip"neovim-remote" id-as"neovim-remote" as"program" sbin"venv/bin/nvr" \
+  atload'
+    nvs(){
+      nvim --listen /tmp/nvimsocket $@
+    }
+  '
+zinit load zdharma-continuum/null
 
 # Auto pushd
 zinit ice id-as"autopushd" as=null atload="setopt autopushd pushdminus pushdsilent pushdtohome"
@@ -188,8 +203,8 @@ zinit load zdharma-continuum/null
 zinit ice id-as"alias" as=null \
   atload'
   alias jj="jobs"
-  alias cgrep="rg -g \*.c -g \*.h -g \*.cpp -g \*.cc"
-  alias mgrep="rg -g \*.mk -g Makefile -g makefile"
+  alias cgrep="rg -t c -t cpp"
+  alias mgrep="rg -t make"
   alias bb="byobu"
   ' 
 zinit load zdharma-continuum/null
