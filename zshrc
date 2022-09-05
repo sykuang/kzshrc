@@ -27,7 +27,7 @@ zinit for \
 # Theme
 zinit ice depth=1; zinit light romkatv/powerlevel10k
 zinit ice lucid depth=1 src"p10k.zsh" atload"POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD=true"
-zinit light sykuang/p10k_theme 
+zinit light sykuang/p10k_theme
 # Autoenv
 zinit ice depth=1;zinit ice lucid wait src"autoenv.zsh"
 zinit light Tarrasch/zsh-autoenv
@@ -38,11 +38,11 @@ zinit wait="0" lucid atload"zicompinit; zicdreplay" blockf for \
 
 # syntax highlight
 zinit wait lucid for \
- atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
+    atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
     zdharma-continuum/fast-syntax-highlighting \
- blockf \
+    blockf \
     zsh-users/zsh-completions \
- atload"!_zsh_autosuggest_start" \
+    atload"!_zsh_autosuggest_start" \
     zsh-users/zsh-autosuggestions
 
 # git-delta
@@ -57,27 +57,27 @@ zinit as"null" wait"1" lucid for \
     sbin    paulirish/git-recent \
     sbin    davidosomething/git-my \
     sbin atload"export _MENU_THEME=legacy" \
-            arzzen/git-quick-stats \
+    arzzen/git-quick-stats \
     sbin    iwata/git-now \
     make"PREFIX=$ZPFX install" \
-            tj/git-extras
+    tj/git-extras
 
 # OMZ framework
 zinit wait lucid for \
-  OMZL::key-bindings.zsh \
-  OMZL::completion.zsh \
-  OMZL::termsupport.zsh \
-  atload'
-  test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
-  ' \
+    OMZL::key-bindings.zsh \
+    OMZL::completion.zsh \
+    OMZL::termsupport.zsh \
+    atload'
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+' \
   OMZL::correction.zsh \
-  atload'
-  alias ..="cd .."
-  alias ...="cd ../.."
-  alias ....="cd ../../.."
-  alias .....="cd ../../../.."
-  ENABLE_CORRECTION=true
-  ' \
+    atload'
+alias ..="cd .."
+alias ...="cd ../.."
+alias ....="cd ../../.."
+alias .....="cd ../../../.."
+ENABLE_CORRECTION=true
+' \
   OMZL::history.zsh \
   OMZP::extract \
   OMZP::colored-man-pages \
@@ -123,7 +123,7 @@ zinit light sei40kr/zsh-fast-alias-tips
 # zsh exa
 zinit ice from"gh-r" as"program" pick"bin/exa" atload"alias ls='exa --icons';alias ll='exa -l --icons --git'" lucid
 zinit light ogham/exa
-zinit ice lucid wait"2" as"completion" 
+zinit ice lucid wait"2" as"completion"
 zinit snippet "https://github.com/ogham/exa/blob/master/completions/zsh/_exa"
 
 # n-install for node
@@ -159,7 +159,7 @@ zinit lucid as'command' pick'bin/pyenv' atinit'export PYENV_ROOT="$PWD"' \
   pyenv/pyenv
 
 # kcmds
-zinit ice lucid 
+zinit ice lucid
 zinit light sykuang/kcmd
 
 # stylua
@@ -167,11 +167,11 @@ zinit ice rustup cargo"!stylua -> stylua" id-as"stylua"
 zinit load zdharma-continuum/null
 
 # jsonlint
-zinit ice node"jsonlint <-!jsonlint -> jsonlint" id-as"jsonlint" 
+zinit ice node"jsonlint <-!jsonlint -> jsonlint" id-as"jsonlint"
 zinit load zdharma-continuum/null
 
 # bpytop
-zinit ice pip"bpytop <- !bpytop -> top" id-as"bpytop" as"program" sbin"venv/bin/bpytop" atload"alias top=bpytop" 
+zinit ice pip"bpytop <- !bpytop -> top" id-as"bpytop" as"program" sbin"venv/bin/bpytop" atload"alias top=bpytop"
 zinit load zdharma-continuum/null
 
 # Pygments
@@ -186,14 +186,22 @@ zinit load koalaman/shellcheck
 zinit ice pip"black" id-as"black" as"program" sbin"venv/bin/black"
 zinit load zdharma-continuum/null
 
+# beautysh
+zinit ice pip"beautysh" id-as"beautysh" as"program" sbin"venv/bin/beautysh"
+zinit load zdharma-continuum/null
+
 # neovim-remote
 zinit ice pip"neovim-remote" id-as"neovim-remote" as"program" sbin"venv/bin/nvr" \
-  atload'
-    nvs(){
-      nvim --listen /tmp/nvimsocket $@
-    }
-  '
+    atload'
+nvs(){
+    nvim --listen /tmp/nvimsocket $@
+}
+'
 zinit load zdharma-continuum/null
+
+# lazygit
+zinit ice from"gh-r" as"program" fbin"lazygit"
+zinit light jesseduffield/lazygit
 
 # Auto pushd
 zinit ice id-as"autopushd" as=null atload="setopt autopushd pushdminus pushdsilent pushdtohome"
@@ -201,17 +209,17 @@ zinit load zdharma-continuum/null
 
 # Alias
 zinit ice id-as"alias" as=null \
-  atload'
-  alias jj="jobs"
-  alias cgrep="rg -t c -t cpp"
-  alias mgrep="rg -t make"
-  alias bb="byobu"
-  ' 
+    atload'
+alias jj="jobs"
+alias cgrep="rg -t c -t cpp"
+alias mgrep="rg -t make"
+alias bb="byobu"
+'
 zinit load zdharma-continuum/null
 
 zinit ice id-as"Path" as=null \
-  atload'
-  [[ ! -d $HOME/.local/bin ]] || path=("$HOME/.local/bin" $path)
-  [[ ! -f $HOME/.zshenv ]] || source $HOME/.zshenv
-  ' 
+    atload'
+[[ ! -d $HOME/.local/bin ]] || path=("$HOME/.local/bin" $path)
+[[ ! -f $HOME/.zshenv ]] || source $HOME/.zshenv
+'
 zinit load zdharma-continuum/null
