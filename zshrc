@@ -178,10 +178,6 @@ zinit load zdharma-continuum/null
 zinit ice pip"Pygments" id-as"Pygments" as"program" sbin"venv/bin/pygmentize" atload"alias ccat=pygmentize"
 zinit load zdharma-continuum/null
 
-# shellcheck
-zinit ice lucid from="gh-r" as"program" sbin"shellcheck" mv"*/shellcheck -> shellcheck"
-zinit load koalaman/shellcheck
-
 # black
 zinit ice pip"black" id-as"black" as"program" sbin"venv/bin/black"
 zinit load zdharma-continuum/null
