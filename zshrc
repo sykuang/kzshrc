@@ -162,10 +162,6 @@ zinit lucid as'command' pick'bin/pyenv' atinit'export PYENV_ROOT="$PWD"' \
 zinit ice lucid
 zinit light sykuang/kcmd
 
-# stylua
-zinit ice rustup cargo"!stylua -> stylua" id-as"stylua"
-zinit load zdharma-continuum/null
-
 # jsonlint
 zinit ice node"jsonlint <-!jsonlint -> jsonlint" id-as"jsonlint"
 zinit load zdharma-continuum/null
