@@ -67,21 +67,12 @@ zinit wait lucid for \
     OMZL::key-bindings.zsh \
     OMZL::completion.zsh \
     OMZL::termsupport.zsh \
-    atload'
-test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
-' \
-  OMZL::correction.zsh \
-    atload'
-alias ..="cd .."
-alias ...="cd ../.."
-alias ....="cd ../../.."
-alias .....="cd ../../../.."
-ENABLE_CORRECTION=true
-' \
-  OMZL::history.zsh \
-  OMZP::extract \
-  OMZP::colored-man-pages \
-  OMZP::sudo
+    OMZL::correction.zsh \
+    atload'ENABLE_CORRECTION=true' \
+    OMZL::history.zsh \
+    OMZP::extract \
+    OMZP::colored-man-pages \
+    OMZP::sudo
 
 # commands
 zinit as="null" lucid from="gh-r" for \
@@ -112,9 +103,6 @@ zinit light Aloxaf/fzf-tab
 zinit ice lucid wait"1a" from"gh-r" as"program" atload'eval "$(mcfly init zsh)";export MCFLY_KEY_SCHEME=vim;export MCFLY_FUZZY=2;export MCFLY_INTERFACE_VIEW=BOTTOM;'
 zinit light cantino/mcfly
 
-# git-cmd
-zinit load sykuang/zsh-git-cmd
-
 # alias tip
 zinit ice from'gh-r' as'program'
 zinit light sei40kr/fast-alias-tips-bin
@@ -126,9 +114,9 @@ zinit light ogham/exa
 zinit ice lucid wait"2" as"completion"
 zinit snippet "https://github.com/ogham/exa/blob/master/completions/zsh/_exa"
 
-# n-install for node
-zinit ice lucid as"program" atclone"export N_PREFIX=$HOME/.n;bash n lts" atload"export N_PREFIX=$HOME/.n;path=("\$N_PREFIX/bin" \$path)"
-zinit snippet "https://github.com/tj/n/blob/master/bin/n"
+# # n-install for node
+# zinit ice lucid as"program" atclone"export N_PREFIX=$HOME/.n;bash n lts" atload"export N_PREFIX=$HOME/.n;path=("\$N_PREFIX/bin" \$path)"
+# zinit snippet "https://github.com/tj/n/blob/master/bin/n"
 
 # nvim
 zinit ice lucid ver"release-0.8" atclone"make CMAKE_BUILD_TYPE=Release CMAKE_INSTALL_PREFIX=$ZPFX" make"PREFIX=$ZPFX install" atload"alias vim=nvim;alias vimdiff='nvim -d'" as"program"
@@ -140,10 +128,6 @@ zinit pick"misc/quitcd/quitcd.zsh" fbin"nnn" make light-mode \
   alias nn='nnn -e'
   export EDITOR=nvim
   " for jarun/nnn
-
-# shfmt
-zinit ice from"gh-r" as"program" mv"shfmt* -> shfmt" fbin"shfmt"
-zinit light mvdan/sh
 
 # cargo
 # Installation of Rust compiler environment via the z-a-rust annex
@@ -158,28 +142,12 @@ zinit lucid as'command' pick'bin/pyenv' atinit'export PYENV_ROOT="$PWD"' \
   atpull"%atclone" src"zpyenv.zsh" nocompile'!' atload'eval "$(pyenv init --path)"' for \
   pyenv/pyenv
 
-# kcmds
-zinit ice lucid
-zinit light sykuang/kcmd
-
-# jsonlint
-zinit ice node"jsonlint <-!jsonlint -> jsonlint" id-as"jsonlint"
-zinit load zdharma-continuum/null
-
 # bpytop
 zinit ice pip"bpytop <- !bpytop -> top" id-as"bpytop" as"program" sbin"venv/bin/bpytop" atload"alias top=bpytop"
 zinit load zdharma-continuum/null
 
 # Pygments
 zinit ice pip"Pygments" id-as"Pygments" as"program" sbin"venv/bin/pygmentize" atload"alias ccat=pygmentize"
-zinit load zdharma-continuum/null
-
-# black
-zinit ice pip"black" id-as"black" as"program" sbin"venv/bin/black"
-zinit load zdharma-continuum/null
-
-# beautysh
-zinit ice pip"beautysh" id-as"beautysh" as"program" sbin"venv/bin/beautysh"
 zinit load zdharma-continuum/null
 
 # neovim-remote
@@ -195,6 +163,18 @@ zinit load zdharma-continuum/null
 zinit ice from"gh-r" as"program" fbin"lazygit"
 zinit light jesseduffield/lazygit
 
+# asdf
+zinit ice lucid wait src"asdf.sh"
+zinit light asdf-vm/asdf
+
+# git-cmd
+zinit ice lucid wait
+zinit load sykuang/zsh-git-cmd
+
+# kcmds
+zinit ice lucid wait
+zinit light sykuang/kcmd
+
 # Auto pushd
 zinit ice id-as"autopushd" as=null atload="setopt autopushd pushdminus pushdsilent pushdtohome"
 zinit load zdharma-continuum/null
@@ -206,12 +186,23 @@ alias jj="jobs"
 alias cgrep="rg -t c -t cpp"
 alias mgrep="rg -t make"
 alias bb="byobu"
+alias ..="cd .."
+alias ...="cd ../.."
+alias ....="cd ../../.."
+alias .....="cd ../../../.."
 '
 zinit load zdharma-continuum/null
 
+# Add extra path
 zinit ice id-as"Path" as=null \
     atload'
 [[ ! -d $HOME/.local/bin ]] || path=("$HOME/.local/bin" $path)
 [[ ! -f $HOME/.zshenv ]] || source $HOME/.zshenv
 '
 zinit load zdharma-continuum/null
+
+# iTerm support
+zinit ice id-as"iterm" as=null \
+    atload'
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+'
