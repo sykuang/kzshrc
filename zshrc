@@ -118,9 +118,7 @@ zinit snippet "https://github.com/ogham/exa/blob/master/completions/zsh/_exa"
 # zinit ice lucid as"program" atclone"export N_PREFIX=$HOME/.n;bash n lts" atload"export N_PREFIX=$HOME/.n;path=("\$N_PREFIX/bin" \$path)"
 # zinit snippet "https://github.com/tj/n/blob/master/bin/n"
 
-# nvim
-zinit ice lucid ver"release-0.8" atclone"make CMAKE_BUILD_TYPE=Release CMAKE_INSTALL_PREFIX=$ZPFX" make"PREFIX=$ZPFX install" atload"alias vim=nvim;alias vimdiff='nvim -d'" as"program"
-zinit light neovim/neovim
+
 
 # jarun/nnn, a file browser, using the for-syntax
 zinit pick"misc/quitcd/quitcd.zsh" fbin"nnn" make light-mode \
@@ -137,10 +135,14 @@ zinit id-as"rust" wait=1 as=null sbin="bin/*" lucid rustup \
   zdharma-continuum/null
 
 # pyenv
-zinit lucid as'command' pick'bin/pyenv' atinit'export PYENV_ROOT="$PWD"' \
-  atclone'PYENV_ROOT="$PWD" ./libexec/pyenv init - > zpyenv.zsh;PYENV_ROOT="$PWD" ./libexec/pyenv install 3.10.1;PYENV_ROOT="$PWD" ./libexec/pyenv global 3.10.1;git clone https://github.com/s1341/pyenv-alias.git plugins/pyenv-alias' \
-  atpull"%atclone" src"zpyenv.zsh" nocompile'!' atload'eval "$(pyenv init --path)"' for \
-  pyenv/pyenv
+# zinit lucid as'command' pick'bin/pyenv' atinit'export PYENV_ROOT="$PWD"' \
+#   atclone'PYENV_ROOT="$PWD" ./libexec/pyenv init - > zpyenv.zsh;PYENV_ROOT="$PWD" ./libexec/pyenv install 3.10.1;PYENV_ROOT="$PWD" ./libexec/pyenv global 3.10.1;git clone https://github.com/s1341/pyenv-alias.git plugins/pyenv-alias' \
+#   atpull"%atclone" src"zpyenv.zsh" nocompile'!' atload'eval "$(pyenv init --path)"' for \
+#   pyenv/pyenv
+
+# asdf
+zinit ice src'asdf.sh' atclone'source ./asdf.sh;asdf plugin add python;asdf plugin add nodejs;asdf install python 3.10.3;asdf global python 3.10.3;asdf install nodejs latest asdf global nodejs latest'
+zinit load asdf-vm/asdf
 
 # bpytop
 zinit ice pip"bpytop <- !bpytop -> top" id-as"bpytop" as"program" sbin"venv/bin/bpytop" atload"alias top=bpytop"
@@ -149,6 +151,10 @@ zinit load zdharma-continuum/null
 # Pygments
 zinit ice pip"Pygments" id-as"Pygments" as"program" sbin"venv/bin/pygmentize" atload"alias ccat=pygmentize"
 zinit load zdharma-continuum/null
+
+# nvim
+zinit ice lucid ver"release-0.8" atclone"make CMAKE_BUILD_TYPE=Release CMAKE_INSTALL_PREFIX=$ZPFX" make"PREFIX=$ZPFX install" atload"alias vim=nvim;alias vimdiff='nvim -d'" as"program"
+zinit light neovim/neovim
 
 # neovim-remote
 zinit ice pip"neovim-remote" id-as"neovim-remote" as"program" sbin"venv/bin/nvr" \
