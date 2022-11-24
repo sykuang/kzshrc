@@ -141,7 +141,7 @@ zinit id-as"rust" wait=1 as=null sbin="bin/*" lucid rustup \
 #   pyenv/pyenv
 
 # asdf
-zinit ice src'asdf.sh' atclone'source ./asdf.sh;asdf plugin add python;asdf plugin add nodejs;asdf install python 3.10.3;asdf global python 3.10.3;asdf install nodejs latest asdf global nodejs latest'
+zinit ice src'asdf.sh' atclone'source $PWD/asdf.sh;asdf plugin add python;asdf plugin add nodejs;asdf install python 3.10.3;asdf global python 3.10.3;asdf install nodejs latest asdf global nodejs latest'
 zinit load asdf-vm/asdf
 
 # bpytop
