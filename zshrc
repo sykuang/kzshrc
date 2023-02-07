@@ -74,9 +74,16 @@ zinit wait lucid for \
   OMZP::colored-man-pages \
   OMZP::sudo
 
-# commands
+# asdf
+zinit ice src'asdf.sh' atclone'source $PWD/asdf.sh;
+asdf plugin add python;asdf install python 3.10.3;asdf global python 3.10.3;
+asdf plugin add nodejs;asdf install nodejs latest;asdf global nodejs latest;
+asdf plugin add neovim;asdf install neovim stable;asdf global neovim stable'
+zinit load asdf-vm/asdf
+
+# fd and rg
 zinit as="null" lucid from="gh-r" for \
-  mv="*/rg -> rg"  sbin		BurntSushi/ripgrep \
+  mv="*/rg -> rg"  sbin="rg"		BurntSushi/ripgrep \
   mv="fd* -> fd"   sbin="fd/fd"  @sharkdp/fd \
   sbin="fzf"       junegunn/fzf
 
@@ -128,10 +135,11 @@ zinit id-as"rust" wait=1 as=null sbin="bin/*" lucid rustup \
   export CARGO_HOME=\$PWD; export RUSTUP_HOME=\$PWD/rustup;path+=(\$CARGO_HOME/bin)" for \
   zdharma-continuum/null
 
-# asdf
-zinit ice src'asdf.sh' atclone'source $PWD/asdf.sh;asdf plugin add python;asdf plugin add nodejs;asdf install python 3.10.3;asdf global python 3.10.3;asdf install nodejs latest asdf global nodejs latest'
-zinit load asdf-vm/asdf
+# nvim
+# zinit ice from"gh-r" as"program" sbin"nvim-linux64/bin/nvim" atload"alias vim='nvim'"
+# zinit light neovim/neovim
 
+if (( $+commands[python3] ));then
 # bpytop
 zinit ice pip"bpytop <- !bpytop -> top" id-as"bpytop" as"program" sbin"venv/bin/bpytop" atload"alias top=bpytop"
 zinit load zdharma-continuum/null
@@ -139,10 +147,6 @@ zinit load zdharma-continuum/null
 # Pygments
 zinit ice pip"Pygments" id-as"Pygments" as"program" sbin"venv/bin/pygmentize" atload"alias ccat=pygmentize"
 zinit load zdharma-continuum/null
-
-# nvim
-zinit ice lucid ver"release-0.8" atclone"make CMAKE_BUILD_TYPE=Release CMAKE_INSTALL_PREFIX=$ZPFX" make"PREFIX=$ZPFX install" atload"alias vim=nvim;alias vimdiff='nvim -d'" as"program"
-zinit light neovim/neovim
 
 # neovim-remote
 zinit ice pip"neovim-remote" id-as"neovim-remote" as"program" sbin"venv/bin/nvr" \
@@ -152,14 +156,11 @@ nvs(){
 }
 '
 zinit load zdharma-continuum/null
+fi
 
 # lazygit
 zinit ice from"gh-r" as"program" fbin"lazygit"
 zinit light jesseduffield/lazygit
-
-# asdf
-zinit ice lucid wait src"asdf.sh"
-zinit light asdf-vm/asdf
 
 # git-cmd
 zinit ice lucid wait
