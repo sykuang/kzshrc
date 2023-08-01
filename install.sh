@@ -17,15 +17,17 @@ if ! (($ + commands[cmake])) || ! (($ + commands[unzip])) || ! (($ + commands[ni
   fi
 fi
 
-if [[ ! -f $HOME/.zshrc ]]; then
-  echo "Install zshrc"
-else
-  echo "$HOME/.zshrc exist!! Exit!"
-  exit
+if [[ ! -f $HOME/.autoenv.zsh ]]; then
+  ln -s $SCRIPT_PATH/.autoenv.zsh $HOME/.autoenv.zsh
 fi
 
 if [[ ! -f $HOME/.zshrc ]]; then
-  ln -s $SCRIPT_PATH/zshrc $HOME/.zshrc
+  echo "Install zshrc"
+  if [[ ! -f $HOME/.zshrc ]]; then
+    ln -s $SCRIPT_PATH/zshrc $HOME/.zshrc
+  fi
+else
+  echo "$HOME/.zshrc exist!! Exit!"
 fi
 
 echo "Install zshrc done"
