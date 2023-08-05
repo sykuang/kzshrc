@@ -4,11 +4,11 @@ SCRIPT_PATH="$(
   cd -- "$(dirname "$0")" >/dev/null 2>&1
   pwd -P
 )"
-if ! (($ + commands[cmake])) || ! (($ + commands[unzip])) || ! (($ + commands[ninja])) || ! (($ + commands[curl])); then
+if ! (($+commands[cmake])) || ! (($+commands[unzip])) || ! (($+commands[ninja])) || ! (($+commands[curl])); then
   # install ubuntu pkgs
   if (($ + commands[apt])) &>/dev/null; then
     sudo apt update
-    sudo apt install -y libffi-dev libssl-dev ninja-build gettext libtool libtool-bin autoconf automake cmake g++ pkg-config unzip curl doxygen
+    sudo apt install -y libffi-dev libssl-dev gettext libtool libtool-bin autoconf automake cmake g++ pkg-config unzip curl doxygen
     # packages for python3
     sudo apt install -y zlib1g zlib1g-dev libssl-dev libbz2-dev libsqlite3-dev lzma
   else
@@ -26,8 +26,6 @@ if [[ ! -f $HOME/.zshrc ]]; then
   if [[ ! -f $HOME/.zshrc ]]; then
     ln -s $SCRIPT_PATH/zshrc $HOME/.zshrc
   fi
-else
-  echo "$HOME/.zshrc exist!! Exit!"
 fi
 
 echo "Install zshrc done"
