@@ -65,6 +65,7 @@ zinit as"null" wait"1" lucid for \
 # OMZ framework
 zinit wait lucid for \
   OMZL::key-bindings.zsh \
+  OMZL::functions.zsh \
   OMZL::completion.zsh \
   OMZL::termsupport.zsh \
   OMZL::correction.zsh \
