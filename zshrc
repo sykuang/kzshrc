@@ -141,24 +141,14 @@ zinit id-as"rust" wait=1 as=null sbin="bin/*" lucid rustup \
 # zinit light neovim/neovim
 
 if (( $+commands[python3] ));then
-# bpytop
-zinit ice pip"bpytop <- !bpytop -> top" id-as"bpytop" as"program" sbin"venv/bin/bpytop" atload"alias top=bpytop"
-zinit load zdharma-continuum/null
-
 # Pygments
 zinit ice pip"Pygments" id-as"Pygments" as"program" sbin"venv/bin/pygmentize" atload"alias ccat=pygmentize"
 zinit load zdharma-continuum/null
-
-# neovim-remote
-zinit ice pip"neovim-remote" id-as"neovim-remote" as"program" sbin"venv/bin/nvr" \
-  atload'
-nvs(){
-  nvim --listen /tmp/nvimsocket $@
-}
-'
-zinit load zdharma-continuum/null
 fi
 
+# btop
+zinit ice as"program" id-as"btop" atclone"make" pick"bin/btop" atload"alias top=btop" 
+zinit light aristocratos/btop
 # lazygit
 zinit ice from"gh-r" as"program" fbin"lazygit"
 zinit light jesseduffield/lazygit
