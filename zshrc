@@ -51,7 +51,7 @@ zinit light dandavison/delta
 
 
 # Extending Git
-zinit as"null" wait"1" lucid for \
+zinit as"null" wait"1" lucid build for \
   sbin    Fakerr/git-recall \
   sbin    cloneopts paulirish/git-open \
   sbin    paulirish/git-recent \
@@ -59,7 +59,6 @@ zinit as"null" wait"1" lucid for \
   sbin atload"export _MENU_THEME=legacy" \
   arzzen/git-quick-stats \
   sbin    iwata/git-now \
-  make"PREFIX=$ZPFX install" \
   tj/git-extras
 
 # OMZ framework
@@ -147,7 +146,7 @@ zinit load zdharma-continuum/null
 fi
 
 # btop
-zinit ice as"program" id-as"btop" atclone"make" pick"bin/btop" atload"alias top=btop" 
+zinit ice as"program" id-as"btop" build pick"bin/btop" atload"alias top=btop" 
 zinit light aristocratos/btop
 # lazygit
 zinit ice from"gh-r" as"program" fbin"lazygit"

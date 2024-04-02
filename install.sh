@@ -6,7 +6,7 @@ SCRIPT_PATH="$(
 )"
 if ! (($+commands[cmake])) || ! (($+commands[unzip])) || ! (($+commands[ninja])) || ! (($+commands[curl])); then
   # install ubuntu pkgs
-  if (($ + commands[apt])) &>/dev/null; then
+  if (($+commands[apt])) &>/dev/null; then
     sudo apt update
     sudo apt install -y libffi-dev libssl-dev gettext libtool libtool-bin autoconf automake cmake g++ pkg-config unzip curl doxygen
     # packages for python3
