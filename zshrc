@@ -114,7 +114,7 @@ cd $HOME
 asdf plugin add python;asdf install python 3.10.3;asdf set python 3.10.3;
 asdf plugin add nodejs;asdf install nodejs latest;asdf set nodejs latest;
 asdf plugin add neovim;asdf install neovim stable;asdf set neovim stable;
-asdf plugin add eza https://github.com/lwiechec/asdf-eza.git;asdf install eza latest;' atload'
+asdf plugin add eza https://github.com/lwiechec/asdf-eza.git;asdf install eza latest;asdf set eza latest' atload'
 path=("${ASDF_DATA_DIR:-$HOME/.asdf}/shims" $path)
 ' lucid
 zinit load asdf-vm/asdf
