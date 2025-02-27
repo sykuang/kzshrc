@@ -70,26 +70,8 @@ zinit wait lucid for \
   OMZL::correction.zsh \
   atload'ENABLE_CORRECTION=true' \
   OMZL::history.zsh \
-  OMZP::extract \
   OMZP::colored-man-pages \
   OMZP::sudo
-
-# asdf
-zinit ice src'asdf.sh' atclone'source $PWD/asdf.sh;
-asdf plugin add python;asdf install python 3.10.3;asdf global python 3.10.3;
-asdf plugin add nodejs;asdf install nodejs latest;asdf global nodejs latest;
-asdf plugin add neovim;asdf install neovim stable;asdf global neovim stable'
-zinit load asdf-vm/asdf
-
-# fd and rg
-zinit as="null" lucid from="gh-r" for \
-  mv="*/rg -> rg"  sbin="rg"		BurntSushi/ripgrep \
-  mv="fd* -> fd"   sbin="fd/fd"  @sharkdp/fd \
-  sbin="fzf"       junegunn/fzf
-
-# fd settings
-zinit ice as="completion"
-zinit snippet 'https://github.com/robbyrussell/oh-my-zsh/blob/master/plugins/fd/_fd'
 
 # fzf setting
 zinit ice lucid wait"0" atclone"sed -ie 's/fc -rl 1/fc -rli 1/' shell/key-bindings.zsh" \
@@ -107,47 +89,9 @@ zinit ice lucid wait
 zinit light Aloxaf/fzf-tab
 
 # mcfly settings
-zinit ice lucid wait"1a" from"gh-r" as"program" atload'eval "$(mcfly init zsh)";export MCFLY_KEY_SCHEME=vim;export MCFLY_FUZZY=2;export MCFLY_INTERFACE_VIEW=BOTTOM;'
-zinit light cantino/mcfly
+# zinit ice lucid wait"0a" from"gh-r" as"program" atload'eval "$(mcfly init zsh)"'
+# zinit light cantino/mcfly
 
-# alias tip
-zinit ice from'gh-r' as'program'
-zinit light sei40kr/fast-alias-tips-bin
-zinit light sei40kr/zsh-fast-alias-tips
-
-# zsh exa
-zinit ice from"gh-r" as"program" pick"bin/exa" atload"alias ls='exa --icons';alias ll='exa -l --icons --git'" lucid
-zinit light ogham/exa
-zinit ice lucid wait"2" as"completion"
-zinit snippet "https://github.com/ogham/exa/blob/master/completions/zsh/_exa"
-
-# jarun/nnn, a file browser, using the for-syntax
-zinit pick"misc/quitcd/quitcd.zsh" fbin"nnn" make light-mode \
-  atload"
-alias nn='nnn -e'
-export EDITOR=nvim
-" for jarun/nnn
-
-# cargo
-# Installation of Rust compiler environment via the z-a-rust annex
-zinit id-as"rust" wait=1 as=null sbin="bin/*" lucid rustup \
-  atload="[[ ! -f ${ZINIT[COMPLETIONS_DIR]}/_cargo ]] && zi creinstall -q rust; \
-  export CARGO_HOME=\$PWD; export RUSTUP_HOME=\$PWD/rustup;path+=(\$CARGO_HOME/bin)" for \
-  zdharma-continuum/null
-
-# nvim
-# zinit ice from"gh-r" as"program" sbin"nvim-linux64/bin/nvim" atload"alias vim='nvim'"
-# zinit light neovim/neovim
-
-if (( $+commands[python3] ));then
-# Pygments
-zinit ice pip"Pygments" id-as"Pygments" as"program" sbin"venv/bin/pygmentize" atload"alias ccat=pygmentize"
-zinit load zdharma-continuum/null
-fi
-
-# btop
-zinit ice as"program" id-as"btop" build pick"bin/btop" atload"alias top=btop" 
-zinit light aristocratos/btop
 # lazygit
 zinit ice from"gh-r" as"program" fbin"lazygit"
 zinit light jesseduffield/lazygit
@@ -169,6 +113,28 @@ zinit ice id-as"Path" as=null \
   atload'
 [[ ! -d $HOME/.local/bin ]] || path=("$HOME/.local/bin" $path)
 [[ ! -f $HOME/.zshenv ]] || source $HOME/.zshenv
+'
+zinit load zdharma-continuum/null
+
+# Add alias
+zinit ice id-as"x-cmd" as=null \
+  atload'
+[ ! -f "$HOME/.x-cmd.root/X" ] || . "$HOME/.x-cmd.root/X" # boot up x-cmd.
+if (( $+commands[eza] )); then
+alias ls="eza --icons"
+fi
+if (( $+commands[btop] )); then
+alias top="btop"
+fi
+if (( $+commands[pygmentize] )); then
+alias ccat="pygmentize"
+fi
+if (( $+commands[nvim] )); then
+alias vim="nvim"
+fi
+if (( $+commands[mcfly] )); then
+eval "$(mcfly init zsh)"
+fi
 '
 zinit load zdharma-continuum/null
 
