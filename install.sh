@@ -27,14 +27,4 @@ if [[ ! -f $HOME/.zshrc ]]; then
     ln -s $SCRIPT_PATH/zshrc $HOME/.zshrc
   fi
 fi
-echo "Install x-cmd"
-eval "$(curl https://get.x-cmd.com)"
-x env use nvim
-x env use eza
-x env use python
-x env use fd
-x env use rg
-#x env use pygmentize
-x env use assh
-x env use node
 echo "Install zshrc done"

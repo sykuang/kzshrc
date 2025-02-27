@@ -108,6 +108,17 @@ zinit light sykuang/kcmd
 zinit ice id-as"autopushd" as=null atload="setopt autopushd pushdminus pushdsilent pushdtohome"
 zinit load zdharma-continuum/null
 
+# asdf
+zinit ice from"gh-r" id-as"asdf" as"program" pick"asdf" atclone'path+=($PWD);
+cd $HOME
+asdf plugin add python;asdf install python 3.10.3;asdf set python 3.10.3;
+asdf plugin add nodejs;asdf install nodejs latest;asdf set nodejs latest;
+asdf plugin add neovim;asdf install neovim stable;asdf set neovim stable;
+asdf plugin add eza https://github.com/lwiechec/asdf-eza.git;asdf install eza latest;' atload'
+path=("${ASDF_DATA_DIR:-$HOME/.asdf}/shims" $path)
+' lucid
+zinit load asdf-vm/asdf
+
 # Add extra path
 zinit ice id-as"Path" as=null \
   atload'
@@ -117,9 +128,8 @@ zinit ice id-as"Path" as=null \
 zinit load zdharma-continuum/null
 
 # Add alias
-zinit ice id-as"x-cmd" as=null \
+zinit ice id-as"alias" as=null \
   atload'
-[ ! -f "$HOME/.x-cmd.root/X" ] || . "$HOME/.x-cmd.root/X" # boot up x-cmd.
 if (( $+commands[eza] )); then
 alias ls="eza --icons"
 fi
