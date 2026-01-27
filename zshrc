@@ -74,6 +74,9 @@ zinit wait lucid for \
   OMZP::sudo
 
 # fzf setting
+zinit ice as"program" from"gh-r" pick"fzf"
+zinit light junegunn/fzf
+
 zinit ice lucid wait"0" atclone"sed -ie 's/fc -rl 1/fc -rli 1/' shell/key-bindings.zsh" \
   atpull"%atclone" multisrc"shell/{completion,key-bindings}.zsh" id-as"junegunn/fzf_completions" \
   pick"/dev/null" \
@@ -89,8 +92,8 @@ zinit ice lucid wait
 zinit light Aloxaf/fzf-tab
 
 # mcfly settings
-# zinit ice lucid wait"0a" from"gh-r" as"program" atload'eval "$(mcfly init zsh)"'
-# zinit light cantino/mcfly
+zinit ice lucid wait"0a" from"gh-r" as"program" atload'eval "$(mcfly init zsh)"'
+zinit light cantino/mcfly
 
 # lazygit
 zinit ice from"gh-r" as"program" fbin"lazygit"
@@ -119,6 +122,14 @@ path=("${ASDF_DATA_DIR:-$HOME/.asdf}/shims" $path)
 ' lucid
 zinit load asdf-vm/asdf
 
+# fd
+zinit ice as"command" from"gh-r" mv"fd* -> fd" pick"fd/fd"
+zinit light sharkdp/fd
+
+# rg
+zinit ice as"command" from"gh-r" mv"ripgrep* -> rg" pick"rg/rg"
+zinit light BurntSushi/ripgrep
+
 # Add extra path
 zinit ice id-as"Path" as=null \
   atload'
@@ -142,9 +153,6 @@ fi
 if (( $+commands[nvim] )); then
 alias vim="nvim"
 fi
-if (( $+commands[mcfly] )); then
-eval "$(mcfly init zsh)"
-fi
 '
 zinit load zdharma-continuum/null
 
@@ -154,3 +162,13 @@ zinit ice id-as"iterm" as=null \
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 '
 zinit load zdharma-continuum/null
+. "$HOME/.local/bin/env"
+
+
+# pnpm
+export PNPM_HOME="/Users/kenkuang/.local/share/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end
