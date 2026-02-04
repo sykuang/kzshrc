@@ -17,8 +17,10 @@ if ! (($+commands[cmake])) || ! (($+commands[unzip])) || ! (($+commands[ninja]))
   fi
 fi
 
-if [[ ! -f $HOME/.autoenv.zsh ]]; then
-  ln -s $SCRIPT_PATH/.autoenv.zsh $HOME/.autoenv.zsh
+# mise config
+if [[ ! -f $HOME/.config/mise/config.toml ]]; then
+  mkdir -p $HOME/.config/mise
+  ln -s $SCRIPT_PATH/config.toml $HOME/.config/mise/config.toml
 fi
 
 if [[ ! -f $HOME/.zshrc ]]; then

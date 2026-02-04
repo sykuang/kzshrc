@@ -10,7 +10,7 @@ if [[ ! -d "$(dirname $ZINIT_HOME)" ]]; then
     print -P "%F{160}▓▒░ The clone has failed.%f%b"
 fi
 
-source "$HOME/.local/share/zinit/zinit.git/zinit.zsh"
+source "$ZINIT_HOME/zinit.zsh"
 
 autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
@@ -26,15 +26,7 @@ zinit for \
 
 # Theme
 zinit ice depth=1; zinit light romkatv/powerlevel10k
-zinit ice lucid depth=1 src"p10k.zsh" atload"POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD=true"
-zinit light sykuang/p10k_theme
-# Autoenv
-zinit ice depth=1;zinit ice lucid wait src"autoenv.zsh"
-zinit light Tarrasch/zsh-autoenv
-
-# completions
-zinit wait="0" lucid atload"zicompinit; zicdreplay" blockf for \
-  zsh-users/zsh-completions
+[[ -f ~/.dotfiles/zshrc/p10k.zsh ]] && source ~/.dotfiles/zshrc/p10k.zsh
 
 # syntax highlight
 zinit wait lucid for \
@@ -111,32 +103,21 @@ zinit light sykuang/kcmd
 zinit ice id-as"autopushd" as=null atload="setopt autopushd pushdminus pushdsilent pushdtohome"
 zinit load zdharma-continuum/null
 
-# asdf
-zinit ice from"gh-r" id-as"asdf" as"program" pick"asdf" atclone'path+=($PWD);
-cd $HOME
-asdf plugin add python;asdf install python 3.10.3;asdf set python 3.10.3;
-asdf plugin add nodejs;asdf install nodejs latest;asdf set nodejs latest;
-asdf plugin add neovim;asdf install neovim stable;asdf set neovim stable;
-asdf plugin add eza https://github.com/lwiechec/asdf-eza.git;asdf install eza latest;asdf set eza latest' atload'
-path=("${ASDF_DATA_DIR:-$HOME/.asdf}/shims" $path)
-' lucid
-zinit load asdf-vm/asdf
+# mise - runtime version manager (replaces asdf)
+zinit ice from"gh-r" as"program" mv"mise* -> mise" pick"mise" \
+  atclone"mise install" atpull"%atclone" \
+  atload'eval "$(mise activate zsh)"'
+zinit light jdx/mise
 
 # fd
-zinit ice as"command" from"gh-r" mv"fd* -> fd" pick"fd/fd"
+zinit ice as"command" from"gh-r" mv"fd* -> fd" pick"fd/fd" \
+  atclone"cp fd/autocomplete/_fd $ZINIT[COMPLETIONS_DIR]" atpull"%atclone"
 zinit light sharkdp/fd
 
 # rg
-zinit ice as"command" from"gh-r" mv"ripgrep* -> rg" pick"rg/rg"
+zinit ice as"command" from"gh-r" mv"ripgrep* -> rg" pick"rg/rg" \
+  atclone"cp rg/complete/_rg $ZINIT[COMPLETIONS_DIR]" atpull"%atclone"
 zinit light BurntSushi/ripgrep
-
-# Add extra path
-zinit ice id-as"Path" as=null \
-  atload'
-[[ ! -d $HOME/.local/bin ]] || path=("$HOME/.local/bin" $path)
-[[ ! -f $HOME/.zshenv ]] || source $HOME/.zshenv
-'
-zinit load zdharma-continuum/null
 
 # Add alias
 zinit ice id-as"alias" as=null \
@@ -161,14 +142,8 @@ zinit ice id-as"iterm" as=null \
   atload'
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 '
-zinit load zdharma-continuum/null
-. "$HOME/.local/bin/env"
-
 
 # pnpm
-export PNPM_HOME="/Users/kenkuang/.local/share/pnpm"
-case ":$PATH:" in
-  *":$PNPM_HOME:"*) ;;
-  *) export PATH="$PNPM_HOME:$PATH" ;;
-esac
-# pnpm end
+[[ -d "$HOME/.local/share/pnpm" ]] && path=("$HOME/.local/share/pnpm" $path)
+# local bin
+[[ -d "$HOME/.local/bin" ]] && path=("$HOME/.local/bin" $path)
