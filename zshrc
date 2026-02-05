@@ -105,7 +105,7 @@ zinit load zdharma-continuum/null
 
 # mise - runtime version manager (replaces asdf)
 zinit ice from"gh-r" as"program" mv"mise* -> mise" pick"mise" \
-  atclone"mise install" atpull"%atclone" \
+  atclone"./mise install" atpull"%atclone" \
   atload'eval "$(mise activate zsh)"'
 zinit light jdx/mise
 
