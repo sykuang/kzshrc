@@ -3,3 +3,7 @@ python = "3.10.3"
 node = "latest"
 neovim = "stable"
 eza = "0.23.4"
+pnpm = "latest"
+
+[env]
+_.python.venv = "auto"
