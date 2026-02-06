@@ -143,6 +143,27 @@ zinit ice id-as"iterm" as=null \
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 '
 
+# Auto-activate .venv if found in current dir or parent dirs
+_auto_venv() {
+  local dir="$PWD"
+  while [[ "$dir" != "/" ]]; do
+    if [[ -f "$dir/.venv/bin/activate" ]]; then
+      if [[ "$VIRTUAL_ENV" != "$dir/.venv" ]]; then
+        source "$dir/.venv/bin/activate"
+      fi
+      return
+    fi
+    dir="${dir:h}"
+  done
+  # Deactivate if we left a venv project
+  if [[ -n "$VIRTUAL_ENV" ]]; then
+    deactivate
+  fi
+}
+autoload -Uz add-zsh-hook
+add-zsh-hook chpwd _auto_venv
+_auto_venv  # run once on shell startup
+
 # pnpm
 [[ -d "$HOME/.local/share/pnpm" ]] && path=("$HOME/.local/share/pnpm" $path)
 # local bin
