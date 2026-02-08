@@ -149,17 +149,43 @@ _auto_venv() {
   while [[ "$dir" != "/" ]]; do
     if [[ -f "$dir/.venv/bin/activate" ]]; then
       if [[ "$VIRTUAL_ENV" != "$dir/.venv" ]]; then
-        source "$dir/.venv/bin/activate"
+        # Deactivate any existing venv first
+        [[ -n "$VIRTUAL_ENV" ]] && deactivate
+        # Save original state before activating
+        _VENV_OLD_PATH="$PATH"
+        _VENV_OLD_PS1="${PS1:-}"
+        _VENV_OLD_PROMPT="${PROMPT:-}"
+        export VIRTUAL_ENV="$dir/.venv"
+        export VIRTUAL_ENV_PROMPT="($(basename "$dir/.venv")) "
+        path=("$VIRTUAL_ENV/bin" $path)
+        export PATH
       fi
       return
     fi
     dir="${dir:h}"
   done
   # Deactivate if we left a venv project
-  if [[ -n "$VIRTUAL_ENV" ]]; then
-    deactivate
-  fi
+  [[ -n "$VIRTUAL_ENV" ]] && deactivate
 }
+
+# Implement deactivate to restore env when leaving a venv
+deactivate() {
+  if [[ -z "$VIRTUAL_ENV" ]]; then
+    return 0
+  fi
+  # Restore PATH
+  if [[ -n "$_VENV_OLD_PATH" ]]; then
+    PATH="$_VENV_OLD_PATH"
+    export PATH
+  else
+    # Fallback: remove venv bin from path
+    path=("${(@)path:#$VIRTUAL_ENV/bin}")
+  fi
+  unset VIRTUAL_ENV VIRTUAL_ENV_PROMPT _VENV_OLD_PATH _VENV_OLD_PS1 _VENV_OLD_PROMPT
+  # Reset hash table so commands are re-resolved
+  hash -r 2>/dev/null
+}
+
 autoload -Uz add-zsh-hook
 add-zsh-hook chpwd _auto_venv
 _auto_venv  # run once on shell startup
