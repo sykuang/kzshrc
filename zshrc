@@ -93,7 +93,7 @@ zinit light jesseduffield/lazygit
 
 # btop
 if [[ "$OSTYPE" == linux* ]]; then
-  zinit ice from"gh-r" as"program" bpick"btop-x86_64-*" mv"btop/bin/btop -> btop" pick"btop"
+  zinit ice from"gh-r" as"program" bpick"btop-x86_64-*" mv"btop/bin/btop -> btop" pick"btop/btop"
   zinit light aristocratos/btop
 fi
 
