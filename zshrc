@@ -75,7 +75,7 @@ zinit ice lucid wait"0" atclone"sed -ie 's/fc -rl 1/fc -rli 1/' shell/key-bindin
   atload"export FZF_DEFAULT_COMMAND='fd --type f'
 DISABLE_LS_COLORS=true
 export FZF_CTRL_T_COMMAND='fd --type f'
-FZF_CTRL_T_OPTS='--reverse --extended --tabstop=2 --cycle --no-mouse --preview \"[[ ! -d {} ]] && pygmentize {}\" --color light --margin 1'
+FZF_CTRL_T_OPTS='--reverse --extended --tabstop=2 --cycle --no-mouse --preview \"[[ ! -d {} ]] && bat --style=numbers --color=always {}\" --color light --margin 1'
 "
 zinit light junegunn/fzf
 
@@ -93,7 +93,7 @@ zinit light jesseduffield/lazygit
 
 # btop
 if [[ "$OSTYPE" == linux* ]]; then
-  zinit ice from"gh-r" as"program" bpick"btop-x86_64-*" mv"btop/bin/btop -> btop" pick"btop/btop"
+  zinit ice from"gh-r" as"program" bpick"btop-*" mv"btop/bin/btop -> btop" pick"btop/btop"
   zinit light aristocratos/btop
 fi
 
@@ -134,14 +134,14 @@ fi
 if (( $+commands[btop] )); then
 alias top="btop"
 fi
-if (( $+commands[pygmentize] )); then
-alias ccat="pygmentize"
-fi
 if (( $+commands[nvim] )); then
 alias vim="nvim"
 fi
 '
 zinit load zdharma-continuum/null
+
+zinit ice from"gh-r" as"program" bpick"bat-*"  pick"bat-*/bat" 
+zinit light sharkdp/bat
 
 # iTerm support
 zinit ice id-as"iterm" as=null \
