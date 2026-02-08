@@ -4,16 +4,15 @@ SCRIPT_PATH="$(
   cd -- "$(dirname "$0")" >/dev/null 2>&1
   pwd -P
 )"
-if ! (($+commands[cmake])) || ! (($+commands[unzip])) || ! (($+commands[ninja])) || ! (($+commands[curl])); then
-  # install ubuntu pkgs
-  if (($+commands[apt])) &>/dev/null; then
-    sudo apt update
-    sudo apt install -y libffi-dev libssl-dev gettext libtool libtool-bin autoconf automake cmake g++ pkg-config unzip curl doxygen
-    # packages for python3
-    sudo apt install -y zlib1g zlib1g-dev libssl-dev libbz2-dev libsqlite3-dev lzma
-  else
-    echo "Some commands is missing, please check"
-    exit
+
+# Install brew for only macOS
+if [[ "$OSTYPE" == darwin* ]]; then
+  if ! command -v brew >/dev/null 2>&1; then
+    echo "Installing Homebrew..."
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  fi
+  if ! command -v btop >/dev/null 2>&1; then
+    brew install btop
   fi
 fi
 
