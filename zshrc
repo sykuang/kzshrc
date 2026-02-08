@@ -91,6 +91,12 @@ zinit light cantino/mcfly
 zinit ice from"gh-r" as"program" fbin"lazygit"
 zinit light jesseduffield/lazygit
 
+# btop
+if [[ "$OSTYPE" == linux* ]]; then
+  zinit ice from"gh-r" as"program" bpick"btop-x86_64-*" mv"btop/bin/btop -> btop" pick"btop"
+  zinit light aristocratos/btop
+fi
+
 # git-cmd
 zinit ice lucid wait
 zinit load sykuang/zsh-git-cmd
