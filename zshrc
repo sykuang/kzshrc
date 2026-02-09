@@ -125,6 +125,12 @@ zinit ice as"command" from"gh-r" mv"ripgrep* -> rg" pick"rg/rg" \
   atclone"cp rg/complete/_rg $ZINIT[COMPLETIONS_DIR]" atpull"%atclone"
 zinit light BurntSushi/ripgrep
 
+# uv - fast Python package installer (provides uvx)
+zinit ice as"program" from"gh-r" mv"uv* -> uv" pick"uv/uv" sbin"uv/uvx" \
+  atclone"./uv/uv generate-shell-completion zsh > $ZINIT[COMPLETIONS_DIR]/_uv" \
+  atpull"%atclone"
+zinit light astral-sh/uv
+
 # Add alias
 zinit ice id-as"alias" as=null \
   atload'
