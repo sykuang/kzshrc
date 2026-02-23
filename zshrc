@@ -110,10 +110,14 @@ zinit ice id-as"autopushd" as=null atload="setopt autopushd pushdminus pushdsile
 zinit load zdharma-continuum/null
 
 # mise - runtime version manager (replaces asdf)
+[[ "$OSTYPE" == darwin* ]] && _mise_os=macos || _mise_os=linux
+[[ "$(uname -m)" == (aarch64|arm64) ]] && _mise_arch=arm64 || _mise_arch=x64
 zinit ice from"gh-r" as"program" mv"mise* -> mise" pick"mise" \
+  bpick"mise-*-${_mise_os}-${_mise_arch}" \
   atclone"./mise install" atpull"%atclone" \
   atload'eval "$(mise activate zsh)"'
 zinit light jdx/mise
+unset _mise_os _mise_arch
 
 # fd
 zinit ice as"command" from"gh-r" mv"fd* -> fd" pick"fd/fd" \
