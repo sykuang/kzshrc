@@ -204,9 +204,7 @@ deactivate() {
 
 autoload -Uz add-zsh-hook
 add-zsh-hook chpwd _auto_venv
-_auto_venv  # run once on shell startup
+add-zsh-hook precmd _auto_venv
 
-# pnpm
-[[ -d "$HOME/.local/share/pnpm" ]] && path=("$HOME/.local/share/pnpm" $path)
 # local bin
 [[ -d "$HOME/.local/bin" ]] && path=("$HOME/.local/bin" $path)
