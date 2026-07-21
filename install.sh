@@ -1,31 +1,102 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
 
-SCRIPT_PATH="$(
-  cd -- "$(dirname "$0")" >/dev/null 2>&1
-  pwd -P
-)"
+set -eu
+setopt pipe_fail
 
-# Install brew for only macOS
-if [[ "$OSTYPE" == darwin* ]]; then
-  if ! command -v brew >/dev/null 2>&1; then
-    echo "Installing Homebrew..."
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+REPOSITORY_URL='https://github.com/sykuang/zsh-config.git'
+ZSH_CONFIG_DIR="$HOME/.config/zsh"
+
+fail() {
+  printf 'Error: %s\n' "$1" >&2
+  exit 1
+}
+
+confirm_install() {
+  local description="$1"
+  local reply
+
+  [[ -t 2 ]] || fail 'an interactive terminal is required'
+
+  while true; do
+    printf 'Install %s? [Y/n] ' "$description" >/dev/tty
+    if ! IFS= read -r reply </dev/tty; then
+      fail "could not read installation selection for $description"
+    fi
+
+    case "$reply" in
+      '' | y | Y | yes | YES | Yes)
+        return 0
+        ;;
+      n | N | no | NO | No)
+        return 1
+        ;;
+      *)
+        printf 'Please answer yes or no.\n' >/dev/tty
+        ;;
+    esac
+  done
+}
+
+link_if_missing() {
+  local source="$1"
+  local destination="$2"
+
+  [[ -e "$source" || -L "$source" ]] || fail "source does not exist: $source"
+
+  if [[ -e "$destination" || -L "$destination" ]]; then
+    printf 'Skipping %s: already exists\n' "$destination"
+    return
   fi
-  if ! command -v btop >/dev/null 2>&1; then
-    brew install btop
+
+  mkdir -p "$(dirname -- "$destination")"
+  ln -s "$source" "$destination"
+  printf 'Linked %s -> %s\n' "$destination" "$source"
+}
+
+find_brew() {
+  if command -v brew >/dev/null 2>&1; then
+    command -v brew
+  elif [[ -x /opt/homebrew/bin/brew ]]; then
+    printf '/opt/homebrew/bin/brew\n'
+  elif [[ -x /usr/local/bin/brew ]]; then
+    printf '/usr/local/bin/brew\n'
+  else
+    return 1
   fi
+}
+
+command -v git >/dev/null 2>&1 || fail 'git is required'
+
+if [[ -e "$ZSH_CONFIG_DIR" || -L "$ZSH_CONFIG_DIR" ]]; then
+  git -C "$ZSH_CONFIG_DIR" rev-parse --is-inside-work-tree >/dev/null 2>&1 ||
+    fail "$ZSH_CONFIG_DIR exists but is not a Git repository"
+  printf 'Using existing zsh configuration repository at %s\n' "$ZSH_CONFIG_DIR"
+else
+  mkdir -p "$(dirname -- "$ZSH_CONFIG_DIR")"
+  printf 'Cloning zsh configuration into %s\n' "$ZSH_CONFIG_DIR"
+  git clone --depth 1 "$REPOSITORY_URL" "$ZSH_CONFIG_DIR"
 fi
 
-# mise config
-if [[ ! -f $HOME/.config/mise/config.toml ]]; then
-  mkdir -p $HOME/.config/mise
-  ln -s $SCRIPT_PATH/config.toml $HOME/.config/mise/config.toml
+if confirm_install 'zsh configuration'; then
+  link_if_missing "$ZSH_CONFIG_DIR/zshrc" "$HOME/.zshrc"
+else
+  printf 'Skipping zsh configuration\n'
 fi
 
-if [[ ! -f $HOME/.zshrc ]]; then
-  echo "Install zshrc"
-  if [[ ! -f $HOME/.zshrc ]]; then
-    ln -s $SCRIPT_PATH/zshrc $HOME/.zshrc
+if confirm_install 'mise configuration'; then
+  link_if_missing "$ZSH_CONFIG_DIR/config.toml" "$HOME/.config/mise/config.toml"
+else
+  printf 'Skipping mise configuration\n'
+fi
+
+if [[ "$OSTYPE" == darwin* ]] && ! command -v btop >/dev/null 2>&1; then
+  if brew_command="$(find_brew)"; then
+    if confirm_install 'btop'; then
+      "$brew_command" install btop
+    else
+      printf 'Skipping optional btop installation\n'
+    fi
+  else
+    printf 'Skipping btop: Homebrew is not installed\n'
   fi
 fi
-echo "Install zshrc done"
