@@ -79,6 +79,7 @@ fi
 
 if confirm_install 'zsh configuration'; then
   link_if_missing "$ZSH_CONFIG_DIR/zshrc" "$HOME/.zshrc"
+  link_if_missing "$ZSH_CONFIG_DIR/p10k.zsh" "$HOME/.p10k.zsh"
 else
   printf 'Skipping zsh configuration\n'
 fi

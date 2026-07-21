@@ -26,7 +26,7 @@ zinit for \
 
 # Theme
 zinit ice depth=1; zinit light romkatv/powerlevel10k
-[[ -f ~/.dotfiles/zshrc/p10k.zsh ]] && source ~/.dotfiles/zshrc/p10k.zsh
+[[ -f "$HOME/.p10k.zsh" ]] && source "$HOME/.p10k.zsh"
 
 # syntax highlight
 zinit wait lucid for \
