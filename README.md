@@ -9,9 +9,9 @@ curl -fsSL https://raw.githubusercontent.com/sykuang/zsh-config/master/install.s
 ```
 
 The installer clones only the latest commit into `~/.config/zsh` and asks
-whether to link the zsh configuration (`~/.zshrc` and `~/.p10k.zsh`) and the
-mise configuration. On macOS, it also asks before installing `btop` when
-Homebrew is already available.
+whether to link the zsh configuration (`~/.zshrc`, `~/.p10k.zsh`, and
+`~/.autoenv.zsh`) and the mise configuration. On macOS, it also asks before
+installing `btop` when Homebrew is already available.
 
 Existing files and symlinks are never overwritten, so the installer is safe to
 run again.
