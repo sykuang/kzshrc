@@ -29,13 +29,27 @@ zinit ice depth=1; zinit light romkatv/powerlevel10k
 [[ -f "$HOME/.p10k.zsh" ]] && source "$HOME/.p10k.zsh"
 
 # syntax highlight
-zinit wait lucid for \
+zinit lucid for \
   atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
   zdharma-continuum/fast-syntax-highlighting \
   blockf \
-  zsh-users/zsh-completions \
-  atload"!_zsh_autosuggest_start" \
-  zsh-users/zsh-autosuggestions
+  zsh-users/zsh-completions
+
+# deja
+[[ "$OSTYPE" == darwin* ]] && _deja_os=darwin || _deja_os=linux
+[[ "$(uname -m)" == (aarch64|arm64) ]] && _deja_arch=arm64 || _deja_arch=amd64
+zinit ice wait"0" lucid from"gh-r" as"command" pick"deja" \
+  bpick"deja_*_${_deja_os}_${_deja_arch}.tar.gz" atclone"./deja import" \
+  atload'
+DEJA_CYCLE_KEY=""
+if [[ -r "$HOME/.local/share/deja/init.zsh" ]]; then
+  source "$HOME/.local/share/deja/init.zsh"
+else
+  eval "$(deja init zsh)"
+fi
+'
+zinit light Giammarco-Ferranti/deja
+unset _deja_os _deja_arch
 
 # git-delta
 zinit ice from"gh-r" id-as"git-delta" as"program" pick"*/delta" lucid
@@ -65,27 +79,21 @@ zinit wait lucid for \
   OMZP::colored-man-pages \
   OMZP::sudo
 
-# fzf setting
-zinit ice as"program" from"gh-r" pick"fzf"
-zinit light junegunn/fzf
-
-zinit ice lucid wait"0" atclone"sed -ie 's/fc -rl 1/fc -rli 1/' shell/key-bindings.zsh" \
-  atpull"%atclone" multisrc"shell/{completion,key-bindings}.zsh" id-as"junegunn/fzf_completions" \
-  pick"/dev/null" \
-  atload"export FZF_DEFAULT_COMMAND='fd --type f'
-DISABLE_LS_COLORS=true
+# fzf
+export FZF_DEFAULT_COMMAND='fd --type f'
 export FZF_CTRL_T_COMMAND='fd --type f'
-FZF_CTRL_T_OPTS='--reverse --extended --tabstop=2 --cycle --no-mouse --preview \"[[ ! -d {} ]] && bat --style=numbers --color=always {}\" --color light --margin 1'
-"
+export FZF_CTRL_T_OPTS='--reverse --extended --tabstop=2 --cycle --no-mouse --preview "[[ ! -d {} ]] && bat --style=numbers --color=always {}" --color light --margin 1'
+export DISABLE_LS_COLORS=true
+zinit ice as"program" from"gh-r" pick"fzf" atload'
+if [[ -o interactive ]] && (( $+commands[fzf] )); then
+  source <(fzf --zsh)
+fi
+'
 zinit light junegunn/fzf
 
 # fzf-tab
 zinit ice lucid wait
 zinit light Aloxaf/fzf-tab
-
-# mcfly settings
-zinit ice lucid wait"0a" from"gh-r" as"program" atload'eval "$(mcfly init zsh)"'
-zinit light cantino/mcfly
 
 # lazygit
 zinit ice from"gh-r" as"program" fbin"lazygit"
@@ -109,13 +117,23 @@ zinit light sykuang/kcmd
 zinit ice id-as"autopushd" as=null atload="setopt autopushd pushdminus pushdsilent pushdtohome"
 zinit load zdharma-continuum/null
 
+# carapace
+export CARAPACE_BRIDGES='zsh,fish,bash,inshellisense'
+zstyle ':completion:*' format $'\e[2;37mCompleting %d\e[m'
+zstyle ':completion:*:git:*' group-order 'main commands' 'alias commands' 'external commands'
+
 # mise - runtime version manager (replaces asdf)
 [[ "$OSTYPE" == darwin* ]] && _mise_os=macos || _mise_os=linux
 [[ "$(uname -m)" == (aarch64|arm64) ]] && _mise_arch=arm64 || _mise_arch=x64
 zinit ice from"gh-r" as"program" mv"mise* -> mise" pick"mise" \
   bpick"mise-*-${_mise_os}-${_mise_arch}" \
   atclone"./mise install" atpull"%atclone" \
-  atload'eval "$(mise activate zsh)"'
+  atload'
+eval "$(mise activate zsh)"
+if (( $+commands[carapace] )); then
+  source <(carapace _carapace)
+fi
+'
 zinit light jdx/mise
 unset _mise_os _mise_arch
 
