@@ -35,7 +35,7 @@ zinit lucid for \
   blockf \
   zsh-users/zsh-completions
 
-# deja
+# deja - predictive inline gray autosuggestions (history-driven, fuzzy + cwd + sequence-aware)
 [[ "$OSTYPE" == darwin* ]] && _deja_os=darwin || _deja_os=linux
 [[ "$(uname -m)" == (aarch64|arm64) ]] && _deja_arch=arm64 || _deja_arch=amd64
 zinit ice wait"0" lucid from"gh-r" as"command" pick"deja" \
@@ -50,6 +50,17 @@ fi
 '
 zinit light Giammarco-Ferranti/deja
 unset _deja_os _deja_arch
+
+# atuin - shell history search (Ctrl+R). Kept alongside deja: deja owns gray hints, atuin owns ^R popup.
+[[ "$OSTYPE" == darwin* ]] && _atuin_os=apple-darwin || _atuin_os=unknown-linux-gnu
+[[ "$(uname -m)" == (aarch64|arm64) ]] && _atuin_arch=aarch64 || _atuin_arch=x86_64
+zinit ice wait"1" lucid from"gh-r" as"program" \
+  bpick"atuin-${_atuin_arch}-${_atuin_os}.tar.gz" \
+  mv"atuin-*/atuin -> atuin" pick"atuin" \
+  atclone"./atuin import auto || true" atpull"%atclone" \
+  atload'eval "$(atuin init zsh --disable-up-arrow)"'
+zinit light atuinsh/atuin
+unset _atuin_os _atuin_arch
 
 # git-delta
 zinit ice from"gh-r" id-as"git-delta" as"program" pick"*/delta" lucid
@@ -91,9 +102,7 @@ fi
 '
 zinit light junegunn/fzf
 
-# fzf-tab
-zinit ice lucid wait
-zinit light Aloxaf/fzf-tab
+
 
 # lazygit
 zinit ice from"gh-r" as"program" fbin"lazygit"
