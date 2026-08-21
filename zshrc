@@ -130,6 +130,13 @@ zinit load zdharma-continuum/null
 export CARAPACE_BRIDGES='zsh,fish,bash,inshellisense'
 zstyle ':completion:*' format $'\e[2;37mCompleting %d\e[m'
 zstyle ':completion:*:git:*' group-order 'main commands' 'alias commands' 'external commands'
+[[ "$OSTYPE" == darwin* ]] && _carapace_os=darwin || _carapace_os=linux
+[[ "$(uname -m)" == (aarch64|arm64) ]] && _carapace_arch=arm64 || _carapace_arch=amd64
+zinit ice from"gh-r" as"program" pick"carapace" \
+  bpick"carapace-bin_*_${_carapace_os}_${_carapace_arch}.tar.gz" \
+  atload'source <(carapace _carapace)'
+zinit light carapace-sh/carapace-bin
+unset _carapace_os _carapace_arch
 
 # mise - runtime version manager (replaces asdf)
 [[ "$OSTYPE" == darwin* ]] && _mise_os=macos || _mise_os=linux
@@ -137,14 +144,13 @@ zstyle ':completion:*:git:*' group-order 'main commands' 'alias commands' 'exter
 zinit ice from"gh-r" as"program" mv"mise* -> mise" pick"mise" \
   bpick"mise-*-${_mise_os}-${_mise_arch}" \
   atclone"./mise install" atpull"%atclone" \
-  atload'
-eval "$(mise activate zsh)"
-if (( $+commands[carapace] )); then
-  source <(carapace _carapace)
-fi
-'
+  atload'eval "$(mise activate zsh)"'
 zinit light jdx/mise
 unset _mise_os _mise_arch
+
+# fzf-tab - fuzzy selector for completion candidates, including carapace results
+zstyle ':completion:*' menu no
+zinit light Aloxaf/fzf-tab
 
 # fd
 zinit ice as"command" from"gh-r" mv"fd* -> fd" pick"fd/fd" \
@@ -173,6 +179,9 @@ alias top="btop"
 fi
 if (( $+commands[nvim] )); then
 alias vim="nvim"
+fi
+if (( $+commands[copilot] )); then
+alias cpt="copilot --yolo"
 fi
 '
 zinit load zdharma-continuum/null
