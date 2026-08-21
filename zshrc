@@ -244,3 +244,4 @@ add-zsh-hook precmd _auto_venv
 
 # local bin
 [[ -d "$HOME/.local/bin" ]] && path=("$HOME/.local/bin" $path)
+[[ -f "$HOME/.zshenv" ]] && source "$HOME/.zshenv"
