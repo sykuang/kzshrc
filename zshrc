@@ -128,7 +128,6 @@ zinit load zdharma-continuum/null
 
 # carapace
 export CARAPACE_BRIDGES='zsh,fish,bash,inshellisense'
-zstyle ':completion:*' format $'\e[2;37mCompleting %d\e[m'
 zstyle ':completion:*:git:*' group-order 'main commands' 'alias commands' 'external commands'
 [[ "$OSTYPE" == darwin* ]] && _carapace_os=darwin || _carapace_os=linux
 [[ "$(uname -m)" == (aarch64|arm64) ]] && _carapace_arch=arm64 || _carapace_arch=amd64
@@ -150,6 +149,9 @@ unset _mise_os _mise_arch
 
 # fzf-tab - fuzzy selector for completion candidates, including carapace results
 zstyle ':completion:*' menu no
+zstyle ':fzf-tab:*' query-string first
+zstyle ':fzf-tab:*' show-group none
+bindkey '^I' expand-or-complete
 zinit light Aloxaf/fzf-tab
 
 # fd
