@@ -29,11 +29,12 @@ zinit ice depth=1; zinit light romkatv/powerlevel10k
 [[ -f "$HOME/.p10k.zsh" ]] && source "$HOME/.p10k.zsh"
 
 # syntax highlight
-zinit lucid for \
-  atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
-  zdharma-continuum/fast-syntax-highlighting \
-  blockf \
-  zsh-users/zsh-completions
+zinit ice wait"0" lucid
+zinit light zdharma-continuum/fast-syntax-highlighting
+
+zinit ice lucid blockf \
+  atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay"
+zinit light zsh-users/zsh-completions
 
 # deja - predictive inline gray autosuggestions (history-driven, fuzzy + cwd + sequence-aware)
 [[ "$OSTYPE" == darwin* ]] && _deja_os=darwin || _deja_os=linux
@@ -95,7 +96,7 @@ export FZF_DEFAULT_COMMAND='fd --type f'
 export FZF_CTRL_T_COMMAND='fd --type f'
 export FZF_CTRL_T_OPTS='--reverse --extended --tabstop=2 --cycle --no-mouse --preview "[[ ! -d {} ]] && bat --style=numbers --color=always {}" --color light --margin 1'
 export DISABLE_LS_COLORS=true
-zinit ice as"program" from"gh-r" pick"fzf" atload'
+zinit ice wait"0" lucid as"program" from"gh-r" pick"fzf" atload'
 if [[ -o interactive ]] && (( $+commands[fzf] )); then
   source <(fzf --zsh)
 fi
@@ -123,15 +124,14 @@ zinit ice lucid wait
 zinit light sykuang/kcmd
 
 # Auto pushd
-zinit ice id-as"autopushd" as=null atload="setopt autopushd pushdminus pushdsilent pushdtohome"
-zinit load zdharma-continuum/null
+setopt autopushd pushdminus pushdsilent pushdtohome
 
 # carapace
 export CARAPACE_BRIDGES='zsh,fish,bash,inshellisense'
 zstyle ':completion:*:git:*' group-order 'main commands' 'alias commands' 'external commands'
 [[ "$OSTYPE" == darwin* ]] && _carapace_os=darwin || _carapace_os=linux
 [[ "$(uname -m)" == (aarch64|arm64) ]] && _carapace_arch=arm64 || _carapace_arch=amd64
-zinit ice from"gh-r" as"program" pick"carapace" \
+zinit ice wait"0" lucid from"gh-r" as"program" pick"carapace" \
   bpick"carapace-bin_*_${_carapace_os}_${_carapace_arch}.tar.gz" \
   atload'source <(carapace _carapace)'
 zinit light carapace-sh/carapace-bin
@@ -171,22 +171,10 @@ zinit ice as"program" from"gh-r" mv"uv* -> uv" pick"uv/uv" sbin"uv/uvx" \
 zinit light astral-sh/uv
 
 # Add alias
-zinit ice id-as"alias" as=null \
-  atload'
-if (( $+commands[eza] )); then
-alias ls="eza --icons"
-fi
-if (( $+commands[btop] )); then
-alias top="btop"
-fi
-if (( $+commands[nvim] )); then
-alias vim="nvim"
-fi
-if (( $+commands[copilot] )); then
-alias cpt="copilot --yolo"
-fi
-'
-zinit load zdharma-continuum/null
+(( $+commands[eza] )) && alias ls="eza --icons"
+(( $+commands[btop] )) && alias top="btop"
+(( $+commands[nvim] )) && alias vim="nvim"
+(( $+commands[copilot] )) && alias cpt="copilot --yolo"
 
 zinit ice from"gh-r" as"program" bpick"bat-*"  pick"bat-*/bat" 
 zinit light sharkdp/bat
