@@ -2,7 +2,7 @@
 python = "3.12"
 node = "latest"
 neovim = "stable"
-eza = "0.23.4"
+eza = "latest"
 fzf = "latest"
 carapace = "latest"
 atuin = "latest"
