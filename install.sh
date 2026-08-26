@@ -65,17 +65,50 @@ find_brew() {
   fi
 }
 
-command -v git >/dev/null 2>&1 || fail 'git is required'
-command -v mise >/dev/null 2>&1 || fail 'mise is required'
+command -v curl >/dev/null 2>&1 || fail 'curl is required'
+
+if [[ "$OSTYPE" == darwin* ]]; then
+  if ! brew_command="$(find_brew)"; then
+    printf 'Installing Homebrew\n'
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    brew_command="$(find_brew)" || fail 'Homebrew installation did not create an executable'
+  fi
+
+  if command -v git >/dev/null 2>&1; then
+    git_command="$(command -v git)"
+  else
+    printf 'Installing Git\n'
+    "$brew_command" install git
+    git_command="$("$brew_command" --prefix git)/bin/git"
+    [[ -x "$git_command" ]] || fail 'Git installation did not create an executable'
+  fi
+else
+  command -v git >/dev/null 2>&1 || fail 'git is required'
+  git_command="$(command -v git)"
+fi
+
+if command -v mise >/dev/null 2>&1; then
+  mise_command="$(command -v mise)"
+else
+  printf 'Installing mise\n'
+  curl https://mise.run | sh
+  if command -v mise >/dev/null 2>&1; then
+    mise_command="$(command -v mise)"
+  elif [[ -x "$HOME/.local/bin/mise" ]]; then
+    mise_command="$HOME/.local/bin/mise"
+  else
+    fail 'mise installation did not create an executable'
+  fi
+fi
 
 if [[ -e "$ZSH_CONFIG_DIR" || -L "$ZSH_CONFIG_DIR" ]]; then
-  git -C "$ZSH_CONFIG_DIR" rev-parse --is-inside-work-tree >/dev/null 2>&1 ||
+  "$git_command" -C "$ZSH_CONFIG_DIR" rev-parse --is-inside-work-tree >/dev/null 2>&1 ||
     fail "$ZSH_CONFIG_DIR exists but is not a Git repository"
   printf 'Using existing zsh configuration repository at %s\n' "$ZSH_CONFIG_DIR"
 else
   mkdir -p "$(dirname -- "$ZSH_CONFIG_DIR")"
   printf 'Cloning zsh configuration into %s\n' "$ZSH_CONFIG_DIR"
-  git clone --depth 1 "$REPOSITORY_URL" "$ZSH_CONFIG_DIR"
+  "$git_command" clone --depth 1 "$REPOSITORY_URL" "$ZSH_CONFIG_DIR"
 fi
 
 if confirm_install 'zsh configuration'; then
@@ -90,7 +123,7 @@ if confirm_install 'mise configuration'; then
   mise_config="$HOME/.config/mise/config.toml"
   link_if_missing "$ZSH_CONFIG_DIR/config.toml" "$mise_config"
   if [[ "$mise_config" -ef "$ZSH_CONFIG_DIR/config.toml" ]]; then
-    mise install
+    "$mise_command" install
   else
     printf 'Skipping tools: %s does not use this repository configuration\n' "$mise_config"
   fi
@@ -99,13 +132,9 @@ else
 fi
 
 if [[ "$OSTYPE" == darwin* ]] && ! command -v btop >/dev/null 2>&1; then
-  if brew_command="$(find_brew)"; then
-    if confirm_install 'btop'; then
-      "$brew_command" install btop
-    else
-      printf 'Skipping optional btop installation\n'
-    fi
+  if confirm_install 'btop'; then
+    "$brew_command" install btop
   else
-    printf 'Skipping btop: Homebrew is not installed\n'
+    printf 'Skipping optional btop installation\n'
   fi
 fi
