@@ -1,189 +1,70 @@
 #!/bin/zsh
 
-ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
-### Added by Zinit's installer
-if [[ ! -d "$(dirname $ZINIT_HOME)" ]]; then
-  print -P "%F{33}▓▒░ %F{220}Installing DHARMA Initiative Plugin Manager (zdharma/zinit)…%f"
-  command mkdir -p "$(dirname $ZINIT_HOME)"
-  command git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME" && \
-    print -P "%F{33}▓▒░ %F{34}Installation successful.%f%b" || \
-    print -P "%F{160}▓▒░ The clone has failed.%f%b"
+HISTFILE="$HOME/.zsh_history"
+ZIM_CONFIG_FILE="$HOME/.config/zsh/zimrc"
+ZIM_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zim"
+
+if [[ ! -e "$ZIM_HOME/zimfw.zsh" ]]; then
+  command mkdir -p "$ZIM_HOME"
+  command curl -fsSL -o "$ZIM_HOME/zimfw.zsh" \
+    https://github.com/zimfw/zimfw/releases/latest/download/zimfw.zsh
 fi
 
-source "$ZINIT_HOME/zinit.zsh"
+if [[ ! "$ZIM_HOME/init.zsh" -nt "$ZIM_CONFIG_FILE" ]]; then
+  source "$ZIM_HOME/zimfw.zsh" init
+fi
 
-autoload -Uz _zinit
-(( ${+_comps} )) && _comps[zinit]=_zinit
+DEJA_CYCLE_KEY=""
+ENABLE_CORRECTION=true
+export _MENU_THEME=legacy
 
-# Load a few important annexes, without Turbo
-# (this is currently required for annexes)
-zinit for \
-  light-mode zdharma-continuum/zinit-annex-patch-dl \
-  light-mode zdharma-continuum/z-a-bin-gem-node \
-  light-mode zdharma-continuum/z-a-rust
-
-### End of Zinit's installer chunk
-
-# Theme
-zinit ice depth=1; zinit light romkatv/powerlevel10k
+source "$ZIM_HOME/init.zsh"
 [[ -f "$HOME/.p10k.zsh" ]] && source "$HOME/.p10k.zsh"
 
-# syntax highlight
-zinit ice wait"0" lucid
-zinit light zdharma-continuum/fast-syntax-highlighting
-
-zinit ice lucid blockf \
-  atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay"
-zinit light zsh-users/zsh-completions
-
-# deja - predictive inline gray autosuggestions (history-driven, fuzzy + cwd + sequence-aware)
-[[ "$OSTYPE" == darwin* ]] && _deja_os=darwin || _deja_os=linux
-[[ "$(uname -m)" == (aarch64|arm64) ]] && _deja_arch=arm64 || _deja_arch=amd64
-zinit ice wait"0" lucid from"gh-r" as"command" pick"deja" \
-  bpick"deja_*_${_deja_os}_${_deja_arch}.tar.gz" atclone"./deja import" \
-  atload'
-DEJA_CYCLE_KEY=""
-if [[ -r "$HOME/.local/share/deja/init.zsh" ]]; then
-  source "$HOME/.local/share/deja/init.zsh"
-else
-  eval "$(deja init zsh)"
+# mise - runtime and command manager
+if (( $+commands[mise] )); then
+  eval "$(mise activate zsh)"
 fi
-'
-zinit light Giammarco-Ferranti/deja
-unset _deja_os _deja_arch
-
-# atuin - shell history search (Ctrl+R). Kept alongside deja: deja owns gray hints, atuin owns ^R popup.
-[[ "$OSTYPE" == darwin* ]] && _atuin_os=apple-darwin || _atuin_os=unknown-linux-gnu
-[[ "$(uname -m)" == (aarch64|arm64) ]] && _atuin_arch=aarch64 || _atuin_arch=x86_64
-zinit ice wait"1" lucid from"gh-r" as"program" \
-  bpick"atuin-${_atuin_arch}-${_atuin_os}.tar.gz" \
-  mv"atuin-*/atuin -> atuin" pick"atuin" \
-  atclone"./atuin import auto || true" atpull"%atclone" \
-  atload'eval "$(atuin init zsh --disable-up-arrow)"'
-zinit light atuinsh/atuin
-unset _atuin_os _atuin_arch
-
-# git-delta
-zinit ice from"gh-r" id-as"git-delta" as"program" pick"*/delta" lucid
-zinit light dandavison/delta
-
-
-# Extending Git
-zinit as"null" wait"1" lucid build for \
-  sbin    Fakerr/git-recall \
-  sbin    cloneopts paulirish/git-open \
-  sbin    paulirish/git-recent \
-  sbin    davidosomething/git-my \
-  sbin atload"export _MENU_THEME=legacy" \
-  arzzen/git-quick-stats \
-  sbin    iwata/git-now \
-  tj/git-extras
-
-# OMZ framework
-zinit wait lucid for \
-  OMZL::key-bindings.zsh \
-  OMZL::functions.zsh \
-  OMZL::completion.zsh \
-  OMZL::termsupport.zsh \
-  OMZL::correction.zsh \
-  atload'ENABLE_CORRECTION=true' \
-  OMZL::history.zsh \
-  OMZP::colored-man-pages \
-  OMZP::sudo
 
 # fzf
 export FZF_DEFAULT_COMMAND='fd --type f'
 export FZF_CTRL_T_COMMAND='fd --type f'
 export FZF_CTRL_T_OPTS='--reverse --extended --tabstop=2 --cycle --no-mouse --preview "[[ ! -d {} ]] && bat --style=numbers --color=always {}" --color light --margin 1'
 export DISABLE_LS_COLORS=true
-zinit ice wait"0" lucid as"program" from"gh-r" pick"fzf" atload'
 if [[ -o interactive ]] && (( $+commands[fzf] )); then
-  source <(fzf --zsh)
+  zsh-defer -c 'source <(fzf --zsh)'
 fi
-'
-zinit light junegunn/fzf
-
-
-
-# lazygit
-zinit ice from"gh-r" as"program" fbin"lazygit"
-zinit light jesseduffield/lazygit
-
-# btop
-if [[ "$OSTYPE" == linux* ]]; then
-  zinit ice from"gh-r" as"program" bpick"btop-*" mv"btop/bin/btop -> btop" pick"btop/btop"
-  zinit light aristocratos/btop
-fi
-
-# git-cmd
-zinit ice lucid wait
-zinit load sykuang/zsh-git-cmd
-
-# kcmds
-zinit ice lucid wait
-zinit light sykuang/kcmd
-
-# Auto pushd
-setopt autopushd pushdminus pushdsilent pushdtohome
 
 # carapace
 export CARAPACE_BRIDGES='zsh,fish,bash,inshellisense'
 zstyle ':completion:*:git:*' group-order 'main commands' 'alias commands' 'external commands'
-[[ "$OSTYPE" == darwin* ]] && _carapace_os=darwin || _carapace_os=linux
-[[ "$(uname -m)" == (aarch64|arm64) ]] && _carapace_arch=arm64 || _carapace_arch=amd64
-zinit ice wait"0" lucid from"gh-r" as"program" pick"carapace" \
-  bpick"carapace-bin_*_${_carapace_os}_${_carapace_arch}.tar.gz" \
-  atload'source <(carapace _carapace)'
-zinit light carapace-sh/carapace-bin
-unset _carapace_os _carapace_arch
+if (( $+commands[carapace] )); then
+  zsh-defer -c 'source <(carapace _carapace)'
+fi
 
-# mise - runtime version manager (replaces asdf)
-[[ "$OSTYPE" == darwin* ]] && _mise_os=macos || _mise_os=linux
-[[ "$(uname -m)" == (aarch64|arm64) ]] && _mise_arch=arm64 || _mise_arch=x64
-zinit ice from"gh-r" as"program" mv"mise* -> mise" pick"mise" \
-  bpick"mise-*-${_mise_os}-${_mise_arch}" \
-  atclone"./mise install" atpull"%atclone" \
-  atload'eval "$(mise activate zsh)"'
-zinit light jdx/mise
-unset _mise_os _mise_arch
+# atuin owns Ctrl+R; deja provides inline suggestions.
+if (( $+commands[atuin] )); then
+  zsh-defer -t 1 -c 'eval "$(atuin init zsh --disable-up-arrow)"'
+fi
 
-# fzf-tab - fuzzy selector for completion candidates, including carapace results
+# Auto pushd
+setopt autopushd pushdminus pushdsilent pushdtohome
+
+# fzf-tab
 zstyle ':completion:*' menu no
 zstyle ':fzf-tab:*' query-string first
 zstyle ':fzf-tab:*' show-group none
 bindkey '^I' expand-or-complete
-zinit light Aloxaf/fzf-tab
 
-# fd
-zinit ice as"command" from"gh-r" mv"fd* -> fd" pick"fd/fd" \
-  atclone"cp fd/autocomplete/_fd $ZINIT[COMPLETIONS_DIR]" atpull"%atclone"
-zinit light sharkdp/fd
-
-# rg
-zinit ice as"command" from"gh-r" mv"ripgrep* -> rg" pick"rg/rg" \
-  atclone"cp rg/complete/_rg $ZINIT[COMPLETIONS_DIR]" atpull"%atclone"
-zinit light BurntSushi/ripgrep
-
-# uv - fast Python package installer (provides uvx)
-zinit ice as"program" from"gh-r" mv"uv* -> uv" pick"uv/uv" sbin"uv/uvx" \
-  atclone"./uv/uv generate-shell-completion zsh > $ZINIT[COMPLETIONS_DIR]/_uv" \
-  atpull"%atclone"
-zinit light astral-sh/uv
-
-# Add alias
+# Aliases
 (( $+commands[eza] )) && alias ls="eza --icons"
 (( $+commands[btop] )) && alias top="btop"
 (( $+commands[nvim] )) && alias vim="nvim"
 (( $+commands[copilot] )) && alias cpt="copilot --yolo"
 
-zinit ice from"gh-r" as"program" bpick"bat-*"  pick"bat-*/bat" 
-zinit light sharkdp/bat
-
 # iTerm support
-zinit ice id-as"iterm" as=null \
-  atload'
-test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
-'
+[[ -e "$HOME/.iterm2_shell_integration.zsh" ]] &&
+  source "$HOME/.iterm2_shell_integration.zsh"
 
 # Auto-activate .venv if found in current dir or parent dirs
 _auto_venv() {

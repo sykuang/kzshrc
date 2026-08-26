@@ -1,0 +1,43 @@
+zstyle ':zim:zmodule' use 'degit'
+zstyle ':zim' disable-version-check yes
+
+# Startup infrastructure and prompt
+zmodule romkatv/zsh-defer
+zmodule romkatv/powerlevel10k --source powerlevel10k.zsh-theme
+
+# Completion must initialize synchronously before deferred completion plugins.
+zmodule zsh-users/zsh-completions --fpath src
+zmodule completion
+
+# Interactive plugins loaded after the first prompt.
+zmodule zdharma-continuum/fast-syntax-highlighting \
+  --cmd 'zsh-defer source {}/fast-syntax-highlighting.plugin.zsh'
+zmodule Giammarco-Ferranti/deja \
+  --cmd 'zsh-defer source {}/deja.plugin.zsh'
+zmodule Aloxaf/fzf-tab \
+  --cmd 'zsh-defer source {}/fzf-tab.plugin.zsh'
+zmodule sykuang/zsh-git-cmd \
+  --cmd 'zsh-defer source {}/git-cmd.zsh'
+zmodule sykuang/kcmd \
+  --cmd 'zsh-defer source {}/kcmd.zsh'
+
+# Oh My Zsh libraries and plugins retained from the Zinit configuration.
+zmodule ohmyzsh/ohmyzsh --cmd 'zsh-defer source {}/lib/key-bindings.zsh'
+zmodule ohmyzsh/ohmyzsh --cmd 'zsh-defer source {}/lib/functions.zsh'
+zmodule ohmyzsh/ohmyzsh --cmd 'zsh-defer source {}/lib/completion.zsh'
+zmodule ohmyzsh/ohmyzsh --cmd 'zsh-defer source {}/lib/termsupport.zsh'
+zmodule ohmyzsh/ohmyzsh --cmd 'zsh-defer source {}/lib/correction.zsh'
+zmodule ohmyzsh/ohmyzsh --cmd 'zsh-defer source {}/lib/history.zsh'
+zmodule ohmyzsh/ohmyzsh \
+  --cmd 'zsh-defer source {}/plugins/colored-man-pages/colored-man-pages.plugin.zsh'
+zmodule ohmyzsh/ohmyzsh \
+  --cmd 'zsh-defer source {}/plugins/sudo/sudo.plugin.zsh'
+
+# Git extensions add their repositories to PATH without runtime plugin scanning.
+zmodule Fakerr/git-recall --cmd 'path+=({} {}/bin)'
+zmodule paulirish/git-open --use git --cmd 'path+=({} {}/bin)'
+zmodule paulirish/git-recent --cmd 'path+=({} {}/bin)'
+zmodule davidosomething/git-my --cmd 'path+=({} {}/bin)'
+zmodule arzzen/git-quick-stats --cmd 'path+=({} {}/bin)'
+zmodule iwata/git-now --use git --cmd 'path+=({} {}/bin)'
+zmodule tj/git-extras --use git --cmd 'path+=({} {}/bin)'

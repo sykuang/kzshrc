@@ -2,7 +2,7 @@
 
 ## Installation
 
-Git, zsh, and curl are required. Run the bootstrap installer:
+Git, zsh, curl, and mise are required. Run the bootstrap installer:
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/sykuang/zsh-config/master/install.sh | zsh
@@ -10,8 +10,10 @@ curl -fsSL https://raw.githubusercontent.com/sykuang/zsh-config/master/install.s
 
 The installer clones only the latest commit into `~/.config/zsh` and asks
 whether to link the zsh configuration (`~/.zshrc`, `~/.p10k.zsh`, and
-`~/.autoenv.zsh`) and the mise configuration. On macOS, it also asks before
-installing `btop` when Homebrew is already available.
+`~/.autoenv.zsh`) and the mise configuration. When linked, mise installs the
+configured command-line tools. Zim and its modules are installed automatically
+on the first shell startup. On macOS, the installer also asks before installing
+`btop` when Homebrew is already available.
 
 Existing files and symlinks are never overwritten, so the installer is safe to
 run again.

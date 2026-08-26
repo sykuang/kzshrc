@@ -66,6 +66,7 @@ find_brew() {
 }
 
 command -v git >/dev/null 2>&1 || fail 'git is required'
+command -v mise >/dev/null 2>&1 || fail 'mise is required'
 
 if [[ -e "$ZSH_CONFIG_DIR" || -L "$ZSH_CONFIG_DIR" ]]; then
   git -C "$ZSH_CONFIG_DIR" rev-parse --is-inside-work-tree >/dev/null 2>&1 ||
@@ -86,7 +87,13 @@ else
 fi
 
 if confirm_install 'mise configuration'; then
-  link_if_missing "$ZSH_CONFIG_DIR/config.toml" "$HOME/.config/mise/config.toml"
+  mise_config="$HOME/.config/mise/config.toml"
+  link_if_missing "$ZSH_CONFIG_DIR/config.toml" "$mise_config"
+  if [[ "$mise_config" -ef "$ZSH_CONFIG_DIR/config.toml" ]]; then
+    mise install
+  else
+    printf 'Skipping tools: %s does not use this repository configuration\n' "$mise_config"
+  fi
 else
   printf 'Skipping mise configuration\n'
 fi
